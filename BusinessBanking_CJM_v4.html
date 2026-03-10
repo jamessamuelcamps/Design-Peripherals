@@ -1,0 +1,1582 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Business Banking — Customer Journey Map</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+   TOKENS — mapped from Value.tokens.json
+   neutral.900 #1A1A33  · brand.brand #5BFF9A
+   brand.300   #00A363  · brand.400   #2ADAA5
+   accent.blue-500 #3280F6 · accent.teal #36A6AC
+   accent.orange-500 #F7871D · neutral.300 #AEAEAE
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
+:root {
+  /* surfaces — built on neutral.900 #1A1A33 */
+  --ink:       #0f0f1f;
+  --ink2:      #1A1A33;
+  --ink3:      #1f1f3d;
+  --ink4:      #262645;
+  --line:      rgba(255,255,255,0.06);
+  --line2:     rgba(255,255,255,0.10);
+  --fog:       rgba(255,255,255,0.5);
+  --fog2:      rgba(255,255,255,0.3);
+  --snow:      #ffffff;
+  --snow2:     rgba(255,255,255,0.8);
+
+  /* swimlane row colours */
+  --mobile-h:  rgba(50,128,246,0.15);   /* blue-500 tint */
+  --web-h:     rgba(0,163,99,0.15);     /* brand.300 tint */
+  --pain-h:    rgba(247,135,29,0.12);   /* orange-500 tint */
+  --oppty-h:   rgba(42,218,165,0.10);   /* brand.400 tint */
+  --kpi-h:     rgba(54,166,172,0.12);   /* teal tint */
+
+  /* card accent colours */
+  --user-ring: #3280F6;    /* accent.blue-500 */
+  --sys-ring:  #36A6AC;    /* accent.teal */
+  --pain-ring: #F7871D;    /* accent.orange-500 */
+  --oppty-ring:#2ADAA5;    /* brand.400 */
+  --kpi-ring:  #36A6AC;    /* accent.teal */
+
+  --label-w:   148px;
+  --header-h:  58px;
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+html { scroll-behavior: smooth; }
+
+body {
+  background: var(--ink);
+  color: var(--snow);
+  font-family: 'Manrope', sans-serif;
+  font-size: 13px;
+  line-height: 1.5;
+  overflow-x: hidden;
+}
+
+/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+   TOP BAR
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
+.topbar {
+  position: fixed; top: 0; left: 0; right: 0;
+  height: var(--header-h);
+  background: var(--ink2);
+  border-bottom: 1px solid var(--line2);
+  display: flex; align-items: center;
+  padding: 0 22px;
+  gap: 0;
+  z-index: 500;
+}
+.tb-logo {
+  display: flex; align-items: center; gap: 12px;
+  margin-right: 28px; flex-shrink: 0;
+}
+.tb-logo-mark {
+  width: 34px; height: 34px; flex-shrink: 0;
+  display: flex; align-items: center; justify-content: center;
+}
+.tb-logo-mark svg { width: 34px; height: 34px; }
+.tb-title {
+  font-size: 13.5px; font-weight: 700; color: var(--snow);
+  letter-spacing: -0.2px; font-family: 'Manrope', sans-serif;
+}
+.tb-sub {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 9.5px; color: var(--fog2);
+  letter-spacing: 0.03em;
+}
+.tb-tabs {
+  display: flex; gap: 2px; flex: 1;
+  overflow-x: auto; scrollbar-width: none;
+  align-items: center;
+}
+.tb-tabs::-webkit-scrollbar { display: none; }
+.tb-tab {
+  flex-shrink: 0;
+  padding: 6px 13px;
+  border-radius: 6px;
+  font-size: 12px; font-weight: 500;
+  cursor: pointer; border: none;
+  background: transparent; color: var(--fog);
+  transition: all 0.14s; white-space: nowrap;
+  letter-spacing: -0.1px;
+}
+.tb-tab:hover { background: var(--ink4); color: rgba(255,255,255,0.8); }
+.tb-tab.active { background: var(--ink4); color: #5BFF9A; }
+
+.tb-legend {
+  display: flex; align-items: center; gap: 14px;
+  margin-left: 20px; flex-shrink: 0;
+  padding-left: 20px;
+  border-left: 1px solid var(--line2);
+}
+.tbl-item {
+  display: flex; align-items: center; gap: 5px;
+  font-size: 10.5px; color: rgba(255,255,255,0.5);
+  white-space: nowrap;
+}
+.tbl-dot {
+  width: 7px; height: 7px; border-radius: 50%;
+}
+
+/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+   LAYOUT
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
+.page {
+  padding-top: var(--header-h);
+}
+
+.product-panel { display: none; }
+.product-panel.active { display: block; }
+
+/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+   PRODUCT BANNER
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
+.prod-banner {
+  padding: 22px 28px 18px;
+  border-bottom: 1px solid var(--line2);
+  display: flex; align-items: center; gap: 16px;
+  background: var(--ink2);
+}
+.prod-icon {
+  width: 46px; height: 46px; border-radius: 13px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 22px; flex-shrink: 0;
+}
+.prod-name {
+  font-size: 20px; font-weight: 800;
+  letter-spacing: -0.5px; color: #fff;
+}
+.prod-meta {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10px; color: rgba(255,255,255,0.4);
+  margin-top: 2px; letter-spacing: 0.02em;
+}
+.prod-tags {
+  margin-left: auto; display: flex; gap: 6px;
+}
+.prod-tag {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 9.5px; padding: 3px 9px; border-radius: 4px;
+  border: 1px solid var(--line2); color: rgba(255,255,255,0.4);
+}
+
+/* stage name label strip — replaces tabs */
+.stage-label-strip {
+  display: flex; align-items: stretch;
+  background: var(--ink3);
+  border-bottom: 1px solid var(--line2);
+  overflow-x: auto; scrollbar-width: none;
+}
+.stage-label-strip::-webkit-scrollbar { display: none; }
+.stage-label-item {
+  flex-shrink: 0;
+  padding: 9px 18px;
+  font-size: 11px; font-weight: 600;
+  color: var(--fog);
+  border-right: 1px solid var(--line);
+  display: flex; align-items: center; gap: 7px;
+  letter-spacing: 0.01em;
+  white-space: nowrap;
+}
+.stage-label-num {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 9px; padding: 1px 6px;
+  border-radius: 3px; font-weight: 500;
+}
+
+/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+   STAGE VIEW — the main canvas
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
+.stage-view { display: block; }
+
+/* The journey board scrolls horizontally */
+.board-scroll-wrap {
+  overflow-x: auto;
+  overflow-y: visible;
+  scrollbar-width: thin;
+  scrollbar-color: var(--ink4) transparent;
+  padding-bottom: 24px;
+}
+.board-scroll-wrap::-webkit-scrollbar { height: 6px; }
+.board-scroll-wrap::-webkit-scrollbar-track { background: transparent; }
+.board-scroll-wrap::-webkit-scrollbar-thumb { background: var(--ink4); border-radius: 4px; }
+
+/* 
+  Board is a CSS grid:
+    col 1              = label column (fixed width)
+    col 2..N           = one column per step
+*/
+.board {
+  display: inline-grid; /* width expands with content */
+  min-width: 100%;
+  /* grid-template-columns set dynamically via JS */
+  /* grid-template-rows: auto per swimlane */
+}
+
+/* ── Step header row ─────────────────────────────── */
+.step-header-cell {
+  background: var(--ink3);
+  border-bottom: 1px solid var(--line2);
+  border-right: 1px solid var(--line);
+  padding: 10px 14px 12px;
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  min-height: 80px;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+}
+.step-header-cell.label-col {
+  left: 0;
+  z-index: 20;
+  background: var(--ink2);
+  border-right: 2px solid var(--line2);
+  width: var(--label-w);
+  justify-content: flex-end;
+}
+.step-num {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 8.5px; font-weight: 400; color: rgba(255,255,255,0.25);
+  letter-spacing: 0.08em; margin-bottom: 4px;
+}
+.step-title {
+  font-size: 12.5px; font-weight: 600; color: #ffffff;
+  line-height: 1.35;
+}
+/* connector arrow after each step header (except last) */
+.step-header-cell:not(.label-col)::after {
+  content: '';
+  position: absolute;
+  right: -9px; top: 50%;
+  transform: translateY(-50%);
+  width: 0; height: 0;
+  border-top: 7px solid transparent;
+  border-bottom: 7px solid transparent;
+  border-left: 8px solid var(--line2);
+  z-index: 11;
+}
+.step-header-cell.last-step::after { display: none; }
+
+/* ── Swimlane label cells ─────────────────────────── */
+.lane-label-cell {
+  position: sticky; left: 0;
+  z-index: 15;
+  background: var(--ink2);
+  border-right: 2px solid var(--line2);
+  border-bottom: 1px solid var(--line);
+  padding: 12px 14px;
+  display: flex; flex-direction: column;
+  justify-content: flex-start; gap: 3px;
+  width: var(--label-w);
+  min-height: 80px;
+}
+.lane-label-cell.platform-mobile { border-left: 3px solid #3280F6; }
+.lane-label-cell.platform-web    { border-left: 3px solid #00A363; }
+.lane-label-cell.pain-lane       { border-left: 3px solid #F7871D; }
+.lane-label-cell.oppty-lane      { border-left: 3px solid #2ADAA5; }
+.lane-label-cell.kpi-lane        { border-left: 3px solid #36A6AC; }
+
+.lane-name {
+  font-size: 11px; font-weight: 700;
+  letter-spacing: 0.02em; color: #ffffff;
+}
+.lane-sub {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 9px; color: rgba(255,255,255,0.4); letter-spacing: 0.04em;
+}
+.lane-platform-chip {
+  display: inline-flex; align-items: center; gap: 4px;
+  font-size: 9.5px; font-weight: 500;
+  padding: 2px 7px; border-radius: 4px; margin-top: 4px;
+  font-family: 'JetBrains Mono', monospace;
+}
+.chip-mob { background: rgba(50,128,246,0.18); color: #3280F6; }
+.chip-web { background: rgba(0,163,99,0.18);  color: #2ADAA5; }
+
+/* ── Body cells (cards go inside these) ──────────── */
+.lane-cell {
+  border-right: 1px solid var(--line);
+  border-bottom: 1px solid var(--line);
+  padding: 10px 10px;
+  vertical-align: top;
+  min-height: 80px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  align-items: flex-start;
+}
+
+/* platform lane backgrounds */
+.mobile-row .lane-cell { background: rgba(50,128,246,0.04); }
+.web-row    .lane-cell { background: rgba(0,163,99,0.04); }
+.pain-row   .lane-cell { background: rgba(247,135,29,0.04); }
+.oppty-row  .lane-cell { background: rgba(42,218,165,0.04); }
+.kpi-row    .lane-cell { background: rgba(54,166,172,0.04); }
+
+/* empty cell */
+.lane-cell.empty {
+  opacity: 0.3;
+}
+
+/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+   ACTION CARDS
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
+.action-card {
+  border-radius: 8px;
+  padding: 8px 10px;
+  font-size: 11.5px;
+  line-height: 1.45;
+  color: rgba(255,255,255,0.8);
+  border: 1px solid transparent;
+  width: 100%;
+  transition: transform 0.12s, box-shadow 0.12s;
+  cursor: default;
+  position: relative;
+}
+.action-card:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 16px rgba(0,0,0,0.35);
+  z-index: 5;
+}
+
+/* card type variants */
+.card-user {
+  background: rgba(50,128,246,0.12);
+  border-color: rgba(50,128,246,0.30);
+}
+.card-system {
+  background: rgba(54,166,172,0.10);
+  border-color: rgba(54,166,172,0.28);
+}
+.card-pain {
+  background: rgba(247,135,29,0.12);
+  border-color: rgba(247,135,29,0.32);
+}
+.card-oppty {
+  background: rgba(42,218,165,0.11);
+  border-color: rgba(42,218,165,0.28);
+}
+.card-kpi {
+  background: rgba(54,166,172,0.12);
+  border-color: rgba(54,166,172,0.30);
+}
+.card-na {
+  background: rgba(220, 38, 38, 0.12);
+  border-color: rgba(220, 38, 38, 0.45);
+  border-style: dashed;
+}
+
+.card-type-tag {
+  display: inline-flex; align-items: center; gap: 4px;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 8.5px; font-weight: 500;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  margin-bottom: 4px;
+  opacity: 0.75;
+}
+.tag-user   { color: #3280F6; }
+.tag-system { color: #36A6AC; }
+.tag-pain   { color: #F7871D; }
+.tag-oppty  { color: #2ADAA5; }
+.tag-kpi    { color: #36A6AC; }
+.tag-na     { color: #FF6B6B; }
+
+.card-body { color: rgba(255,255,255,0.8); }
+
+/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+   SECTION DIVIDERS between swimlane groups
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
+.divider-row .lane-label-cell,
+.divider-row .lane-cell {
+  min-height: 6px;
+  padding: 0;
+  background: var(--line);
+  border-bottom: none;
+}
+.divider-row .lane-label-cell {
+  background: var(--line2);
+}
+
+/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+   STEP CONNECTOR TRACK (visual timeline line)
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
+.step-track-row .lane-cell {
+  min-height: 0; height: 3px; padding: 0;
+  background: var(--line);
+  border-bottom: none;
+  position: relative;
+}
+.step-track-row .lane-cell::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+}
+
+/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+   EMPTY STATE DASH
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
+.na-label {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 9.5px; color: rgba(255,255,255,0.2);
+  padding: 6px 4px;
+}
+
+/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+   SCROLL HINT
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
+.scroll-hint {
+  display: flex; align-items: center; gap: 8px;
+  padding: 8px 28px;
+  font-size: 10.5px; color: rgba(255,255,255,0.35);
+  font-family: 'JetBrains Mono', monospace;
+  border-bottom: 1px solid var(--line);
+  background: var(--ink2);
+}
+.scroll-hint-arrow { font-size: 14px; animation: nudge 1.8s ease-in-out infinite; }
+@keyframes nudge {
+  0%,100% { transform: translateX(0); }
+  50%      { transform: translateX(5px); }
+}
+
+::-webkit-scrollbar { width: 6px; height: 6px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: var(--ink4); border-radius: 4px; }
+</style>
+</head>
+<body>
+
+<!-- ━━━━━━━━━━━━━━━━━━━━ TOP BAR ━━━━━━━━━━━━━━━━━━━━ -->
+<header class="topbar">
+  <div class="tb-logo">
+    <div class="tb-logo-mark">
+      <svg width="68" height="68" viewBox="0 0 68 68" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M68 34V13.5987V0H54.398H34V13.5987H54.398V34H68Z" fill="#006D6B"/>
+        <path d="M54.398 34C54.398 45.2682 45.2649 54.398 34 54.398C22.7351 54.398 13.5987 45.2649 13.5987 34C13.5987 22.7351 22.7318 13.5987 34 13.5987C45.2682 13.5987 54.398 22.7318 54.398 34ZM67.9966 34C68 15.2219 52.7781 0 34 0C15.2219 0 0 15.2219 0 34C0 52.7781 15.2219 68 34 68C52.7781 68 68 52.7781 68 34" fill="#2ADAA5"/>
+      </svg>
+    </div>
+    <div>
+      <div class="tb-title">Business Banking</div>
+      <div class="tb-sub">CUSTOMER JOURNEY MAP</div>
+    </div>
+  </div>
+  <div class="tb-tabs" id="productTabs"></div>
+  <div class="tb-legend">
+    <div class="tbl-item"><div class="tbl-dot" style="background:#3280F6"></div>User</div>
+    <div class="tbl-item"><div class="tbl-dot" style="background:#36A6AC"></div>System</div>
+    <div class="tbl-item"><div class="tbl-dot" style="background:#F7871D"></div>Pain</div>
+    <div class="tbl-item"><div class="tbl-dot" style="background:#2ADAA5"></div>Opportunity</div>
+    <div class="tbl-item"><div class="tbl-dot" style="background:#36A6AC"></div>KPI</div>
+  </div>
+</header>
+
+<div class="page" id="page"></div>
+
+<script>
+/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+   DATA MODEL
+   Each stage has steps (columns).
+   Each step has:
+     mobile:  [ {type:'user'|'system', text} ]
+     web:     [ {type:'user'|'system', text} ]
+     pain:    [ string ]
+     oppty:   [ string ]
+     kpi:     [ string ]
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
+const PRODUCTS = [
+{
+  id:'onboarding', name:'Onboarding', emoji:'🚀', accent:'#5BFF9A', accentDim:'rgba(91,255,154,0.10)',
+  stages:[
+  {
+    name:'Discovery',
+    steps:[
+      { name:'Finds Product',
+        mobile:[{t:'user',text:'Sees app store ad or referral; searches "business banking"'}],
+        web:   [{t:'user',text:'Finds via Google search, comparison site or direct URL'}],
+        pain:  ['Brand awareness low vs incumbents'],
+        oppty: ['Referral reward programme to incentivise word-of-mouth'],
+        kpi:   ['App store ranking; organic search position; referral rate'] },
+      { name:'Explores Features',
+        mobile:[{t:'user',text:'Views app store listing, screenshots & reviews'}],
+        web:   [{t:'user',text:'Browses marketing site: features, pricing, FAQs'},{t:'user',text:'Engages live chat or help widget'}],
+        pain:  ['Feature comparison vs competitors not clear enough'],
+        oppty: ['Interactive product tour on landing page'],
+        kpi:   ['Landing page time-on-page; scroll depth; demo request rate'] },
+      { name:'Decides to Register',
+        mobile:[{t:'user',text:'Taps "Open an account" CTA on splash screen'}],
+        web:   [{t:'user',text:'Clicks primary "Get started" CTA'}],
+        pain:  [],
+        oppty: ['Personalised CTA copy based on business type / UTM source'],
+        kpi:   ['CTA click-through rate; install-to-register start %'] },
+    ]
+  },
+  {
+    name:'Registration',
+    steps:[
+      { name:'Create Account',
+        mobile:[{t:'user',text:'Enters email + password'},{t:'system',text:'Sends OTP to email for verification'}],
+        web:   [{t:'user',text:'Enters email + password'},{t:'system',text:'Sends verification link via email'}],
+        pain:  ['OTP not received; goes to spam'],
+        oppty: ['Magic-link alternative; SSO with Google / Microsoft'],
+        kpi:   ['Email verification completion rate; time-to-verify'] },
+      { name:'Business Details',
+        mobile:[{t:'user',text:'Completes step-by-step form: name, type, reg no., address'},{t:'system',text:'Auto-populates via Companies House lookup'}],
+        web:   [{t:'user',text:'Fills full-page form with address autocomplete'},{t:'system',text:'Same Companies House lookup with inline validation'}],
+        pain:  ['Long form causes drop-off; no progress saved on mobile','Fields reset on browser back/refresh'],
+        oppty: ['Auto-save progress; resume link emailed if abandoned','Pre-fill from Companies House to cut manual entry by ~60%'],
+        kpi:   ['Form completion rate per field; drop-off by step; abandonment recovery rate'] },
+      { name:'Set Password & Preferences',
+        mobile:[{t:'user',text:'Sets strong password; enables biometric login'},{t:'system',text:'Validates password strength in real time'}],
+        web:   [{t:'user',text:'Sets password; opts into notification preferences'}],
+        pain:  ['Biometric enrolment not prompted clearly on web'],
+        oppty: ['Offer passkey / biometric from day one on both platforms'],
+        kpi:   ['Biometric enrolment rate; avg. password strength score'] },
+    ]
+  },
+  {
+    name:'KYB / KYC',
+    steps:[
+      { name:'Personal ID',
+        mobile:[{t:'user',text:'Camera-scans passport or driving licence (OCR)'},{t:'system',text:'AI extracts data; checks against PEP & sanctions lists'}],
+        web:   [{t:'user',text:'Uploads file (PDF/JPG) with guided drag-and-drop'},{t:'system',text:'Same AI check; result shown in dashboard'}],
+        pain:  ['Poor lighting causes OCR failure; no retry guidance'],
+        oppty: ['Instant feedback on photo quality before submission'],
+        kpi:   ['OCR success rate; ID auto-approval rate'] },
+      { name:'Liveness Check',
+        mobile:[{t:'user',text:'Completes in-app face scan with liveness detection'},{t:'system',text:'Liveness result returned in <5 sec'}],
+        web:   [{t:'user',text:'Uploads selfie or uses webcam'},{t:'system',text:'Same liveness check via webcam API'}],
+        pain:  ['Webcam permission denied by browser blocks flow'],
+        oppty: ['Provide photo-upload fallback with manual review path'],
+        kpi:   ['Liveness pass rate; fallback usage rate'] },
+      { name:'Business Verification',
+        mobile:[{t:'user',text:'Enters UBOs with >25% ownership; uploads supporting docs'},{t:'system',text:'Cross-references Companies House data automatically'}],
+        web:   [{t:'user',text:'Same flow; bulk document upload available'},{t:'system',text:'Auto-flags discrepancies for compliance review'}],
+        pain:  ['Users unsure what "beneficial owner" means; friction point','Manual review SLA not communicated'],
+        oppty: ['Plain-English tooltips explaining UBO requirements','Live progress tracker showing review queue position'],
+        kpi:   ['Auto-approval rate; avg. manual review time; resubmission rate'] },
+      { name:'Decision',
+        mobile:[{t:'system',text:'Push notification: approved / additional info required'},{t:'user',text:'Resolves any outstanding queries in-app'}],
+        web:   [{t:'system',text:'Email + in-app notification with detailed next steps'},{t:'user',text:'Uploads any additional docs via web portal'}],
+        pain:  ['No ETA given for manual review; users call support'],
+        oppty: ['Proactive status page; estimated completion time shown'],
+        kpi:   ['Support contacts triggered by KYB delays; SLA adherence rate'] },
+    ]
+  },
+  {
+    name:'Activation',
+    steps:[
+      { name:'Welcome & Setup',
+        mobile:[{t:'system',text:'Animated welcome screen with account details'},{t:'user',text:'Views quick-start checklist with progress tracker'}],
+        web:   [{t:'system',text:'Welcome banner + interactive setup wizard'},{t:'user',text:'Dismissible checklist pinned to dashboard'}],
+        pain:  ['Checklist feels overwhelming; too many items at once'],
+        oppty: ['Progressive disclosure: surface top 3 items first','Gamified progress bar to drive completion'],
+        kpi:   ['Checklist open rate; items completed in first 7 days'] },
+      { name:'First Value Moment',
+        mobile:[{t:'user',text:'Makes first internal transfer or adds a payee'},{t:'system',text:'Confetti animation + "You\'re set up!" confirmation'}],
+        web:   [{t:'user',text:'Makes first payment or invites first team member'},{t:'system',text:'Dashboard updates with first transaction visible'}],
+        pain:  ['Users who skip first action have 3× higher churn'],
+        oppty: ['Contextual nudge at 24 hrs if no action taken','Sandbox mode to practise without real money'],
+        kpi:   ['% users completing first action within 24 hrs; D7 retention rate'] },
+    ]
+  },
+  ]
+},
+
+{
+  id:'money', name:'Move Money', emoji:'💸', accent:'#3280F6', accentDim:'rgba(50,128,246,0.12)',
+  stages:[
+  {
+    name:'Internal Transfers',
+    steps:[
+      { name:'Start Transfer',
+        mobile:[{t:'user',text:'Taps "Move Money" from home screen'},{t:'user',text:'Selects "Between my accounts"'}],
+        web:   [{t:'user',text:'Clicks "Transfer" in main navigation'}],
+        pain:  [],
+        oppty: ['Shortcut tile on home for frequent own-account moves'],
+        kpi:   ['Transfer initiation rate per DAU'] },
+      { name:'Enter Details',
+        mobile:[{t:'user',text:'Selects from/to account; enters amount on numeric keypad'},{t:'user',text:'Adds optional reference'}],
+        web:   [{t:'user',text:'Selects accounts from dropdown; enters amount + memo'},{t:'system',text:'Live balance check warns if insufficient funds'}],
+        pain:  ['No live balance shown on mobile before confirming'],
+        oppty: ['Show real-time post-transfer balance preview'],
+        kpi:   ['Avg. time from start to confirm; abandonment rate'] },
+      { name:'Confirm & Complete',
+        mobile:[{t:'user',text:'Reviews summary; confirms with biometric'},{t:'system',text:'Instant transfer; push notification sent'}],
+        web:   [{t:'user',text:'Reviews summary; clicks "Confirm"'},{t:'system',text:'Instant transfer; balance updates immediately'}],
+        pain:  [],
+        oppty: ['Offer "schedule this transfer" prompt after completion'],
+        kpi:   ['Transfer completion rate; avg. end-to-end time (<60 sec target)'] },
+    ]
+  },
+  {
+    name:'External Payments',
+    steps:[
+      { name:'Add / Select Payee',
+        mobile:[{t:'user',text:'Taps "New Payee"; enters sort code + account number'},{t:'system',text:'Confirmation of Payee (CoP) result shown instantly'}],
+        web:   [{t:'user',text:'Form with sort code lookup; payee name auto-suggests'},{t:'system',text:'CoP check mandatory before proceeding'}],
+        pain:  ['CoP mismatch message too technical; causes abandonment'],
+        oppty: ['Plain-English CoP mismatch explanation + support link','Save payee automatically after first successful payment'],
+        kpi:   ['CoP match rate; payee add completion rate'] },
+      { name:'Payment Details',
+        mobile:[{t:'user',text:'Enters amount, reference, and payment date'}],
+        web:   [{t:'user',text:'Enters details; option to save as reusable template'}],
+        pain:  ['No template feature on mobile'],
+        oppty: ['Sync payment templates across mobile and web'],
+        kpi:   ['Template usage rate; avg. payment creation time'] },
+      { name:'Authorise',
+        mobile:[{t:'user',text:'Authenticates with biometric or PIN'},{t:'system',text:'Payment submitted to Faster Payments / CHAPS'}],
+        web:   [{t:'user',text:'Completes 2FA (authenticator app or SMS)'},{t:'system',text:'Same payment rail submission'}],
+        pain:  ['SMS 2FA unreliable for some users; causes drop-off'],
+        oppty: ['Promote authenticator app as primary 2FA method'],
+        kpi:   ['Auth completion rate; 2FA method split; failed payment rate'] },
+      { name:'Confirmation',
+        mobile:[{t:'system',text:'Push notification with payment reference + amount'},{t:'user',text:'Views payment in transaction list'}],
+        web:   [{t:'system',text:'On-screen confirmation + email receipt'},{t:'user',text:'Downloads PDF receipt if needed'}],
+        pain:  [],
+        oppty: ['One-tap "Pay again" from confirmation screen'],
+        kpi:   ['Payment success rate; email receipt open rate'] },
+    ]
+  },
+  {
+    name:'Bulk Payments',
+    steps:[
+      { name:'Access & Upload',
+        mobile:[{t:'user',text:'Taps "Bulk Payments" in Move Money menu (view-only mode)'},{t:'system',text:'Prompts user to complete upload on web'}],
+        web:   [{t:'user',text:'Drags and drops CSV/XLSX file onto upload zone'},{t:'system',text:'Parses file; validates each row in real time'}],
+        pain:  ['CSV template not easily discoverable','Mobile upload not supported — creates friction for field teams'],
+        oppty: ['In-app CSV template download','Allow mobile approval of pre-uploaded batches'],
+        kpi:   ['Bulk payment adoption rate; file upload success rate'] },
+      { name:'Review & Fix Errors',
+        mobile:[{t:'user',text:'Views error summary; prompted to fix on desktop'}],
+        web:   [{t:'user',text:'Reviews inline error table with row-level highlighting'},{t:'user',text:'Edits individual rows or excludes failed entries'}],
+        pain:  ['Large files (500+ rows) slow to validate','Errors not actionable without re-exporting CSV'],
+        oppty: ['Edit-in-place for bulk rows on web','Download pre-filled error CSV for batch correction'],
+        kpi:   ['Error correction rate; avg. errors per file; re-upload rate'] },
+      { name:'Approve & Submit',
+        mobile:[{t:'user',text:'Approves batch (if authorised role)'}],
+        web:   [{t:'user',text:'Reviews payment summary; confirms total amount'},{t:'system',text:'Processes payments; partial success handled gracefully'}],
+        pain:  ['No per-row status after partial submission'],
+        oppty: ['Real-time progress bar during batch processing','Per-row result report downloadable after submission'],
+        kpi:   ['Batch approval rate; partial failure rate (<5% target); processing time'] },
+    ]
+  },
+  {
+    name:'Scheduled Payments',
+    steps:[
+      { name:'Create Schedule',
+        mobile:[{t:'user',text:'Toggles "Send later" on any payment; picks date'},{t:'system',text:'Scheduled payment saved; shown in calendar view'}],
+        web:   [{t:'user',text:'Same toggle + recurring frequency options (weekly / monthly / annually)'},{t:'system',text:'Appears in upcoming payments dashboard widget'}],
+        pain:  ['Recurring options not available on mobile'],
+        oppty: ['Sync recurring configuration between platforms'],
+        kpi:   ['Schedule creation rate; recurring vs one-time split'] },
+      { name:'Pre-payment Reminder',
+        mobile:[{t:'system',text:'Push notification 24 hrs before payment date'},{t:'system',text:'Balance warning if funds look insufficient'}],
+        web:   [{t:'system',text:'Email reminder 24 hrs before + in-app notification'},{t:'system',text:'Low-balance alert 48 hrs before if at risk'}],
+        pain:  ['Payment fails silently if balance insufficient on due date'],
+        oppty: ['Auto top-up rule: transfer from savings pot if balance low'],
+        kpi:   ['Reminder open rate; % payments that fail due to low balance (<1% target)'] },
+      { name:'Manage & Edit',
+        mobile:[{t:'user',text:'Taps scheduled payment → edit amount, date or cancel'},{t:'system',text:'Confirms change; updates calendar view'}],
+        web:   [{t:'user',text:'Table view with inline edit, pause and cancel actions'},{t:'system',text:'Audit log of all schedule changes'}],
+        pain:  ['No "pause" option on mobile; must cancel and recreate'],
+        oppty: ['Add pause/resume for seasonal business needs','Annual cost insight: "This recurring costs you £X/yr"'],
+        kpi:   ['Edit rate; cancellation rate; on-time execution rate'] },
+    ]
+  },
+  ]
+},
+
+{
+  id:'card', name:'Debit Card', emoji:'💳', accent:'#2ADAA5', accentDim:'rgba(42,218,165,0.12)',
+  stages:[
+  {
+    name:'Order',
+    steps:[
+      { name:'Request Card',
+        mobile:[{t:'user',text:'Taps "Cards" tab → "Order new card"'},{t:'user',text:'Confirms or updates delivery address'}],
+        web:   [{t:'user',text:'Cards section → "Order card" → delivery address form'}],
+        pain:  [],
+        oppty: ['Issue virtual card instantly on request; physical card follows'],
+        kpi:   ['Card order completion rate'] },
+      { name:'Order Confirmed',
+        mobile:[{t:'system',text:'Confirmation screen; estimated delivery 3–5 days'},{t:'system',text:'Pushes virtual card details immediately'}],
+        web:   [{t:'system',text:'Same confirmation + email with tracking info'}],
+        pain:  ['No real-time delivery tracking link provided'],
+        oppty: ['Integrate with courier API for live delivery status'],
+        kpi:   ['Avg. physical delivery time; virtual card activation rate'] },
+    ]
+  },
+  {
+    name:'Activate',
+    steps:[
+      { name:'Receive & Activate',
+        mobile:[{t:'user',text:'Taps "Activate card" in app'},{t:'user',text:'Enters last 4 digits from physical card'}],
+        web:   [{t:'user',text:'Cards dashboard → "Activate" → enters last 4 digits'}],
+        pain:  ['Activation step not clearly prompted; some users miss it'],
+        oppty: ['Proactive push notification when card likely delivered (5th working day)'],
+        kpi:   ['Activation rate within 7 days of estimated delivery (>85% target)'] },
+      { name:'Set PIN',
+        mobile:[{t:'user',text:'Sets 4-digit PIN in-app; no ATM visit needed'},{t:'system',text:'PIN encrypted and provisioned to card network'}],
+        web:   [{t:'user',text:'Same secure web-based PIN set flow'}],
+        pain:  [],
+        oppty: ['Allow PIN change anytime from card management screen'],
+        kpi:   ['PIN set completion rate; time between activation and PIN set'] },
+    ]
+  },
+  {
+    name:'Manage',
+    steps:[
+      { name:'View Card Details',
+        mobile:[{t:'user',text:'Taps card → biometric auth to reveal PAN + CVV'},{t:'system',text:'Auto-hides after 30 sec for security'}],
+        web:   [{t:'user',text:'Clicks card → 2FA to reveal PAN + CVV'},{t:'system',text:'Same auto-hide behaviour'}],
+        pain:  ['Users copy PAN to clipboard — security risk'],
+        oppty: ['One-tap copy with clipboard auto-clear after 60 sec'],
+        kpi:   ['Card detail reveal frequency; security incident rate'] },
+      { name:'Freeze / Unfreeze',
+        mobile:[{t:'user',text:'Toggles freeze instantly from card home screen'},{t:'system',text:'Card frozen in <2 sec; real-time confirmation'}],
+        web:   [{t:'user',text:'Prominent toggle on card dashboard'},{t:'system',text:'Same instant freeze; email confirmation sent'}],
+        pain:  [],
+        oppty: ['Freeze by category (e.g. international only) for granular control'],
+        kpi:   ['Freeze toggle usage rate; avg. time frozen before unfreeze'] },
+      { name:'Spend Controls',
+        mobile:[{t:'user',text:'Taps "Limits" → sets daily ATM / contactless / online limits'},{t:'system',text:'Limits applied instantly to card'}],
+        web:   [{t:'user',text:'Sliders with live preview of impact'},{t:'system',text:'Same instant application; history logged'}],
+        pain:  ['Limit reset on card replacement not communicated'],
+        oppty: ['Merchant category blocking (e.g. gambling, entertainment)'],
+        kpi:   ['% cards with custom limits set; limit breach attempts'] },
+      { name:'Notifications',
+        mobile:[{t:'system',text:'Push notification per transaction with merchant + amount'},{t:'user',text:'Taps notification to see full transaction detail'}],
+        web:   [{t:'system',text:'In-app notification + optional email per transaction'}],
+        pain:  ['Decline reason not shown in notification; user confusion'],
+        oppty: ['Include decline reason code in push notification'],
+        kpi:   ['Notification opt-in rate; % declines where user self-resolves'] },
+    ]
+  },
+  {
+    name:'Disputes',
+    steps:[
+      { name:'Report Issue',
+        mobile:[{t:'user',text:'Taps transaction → "Something\'s wrong" → selects reason'},{t:'user',text:'For lost/stolen: taps "Report" → instant freeze + reorder'}],
+        web:   [{t:'user',text:'Same dispute flow; file upload for supporting evidence'},{t:'user',text:'Lost/stolen: same instant freeze + order replacement'}],
+        pain:  ['Evidence upload not available on mobile'],
+        oppty: ['Camera upload of evidence directly from mobile'],
+        kpi:   ['Dispute initiation rate; self-service dispute rate'] },
+      { name:'Case Opened',
+        mobile:[{t:'system',text:'Reference number issued; provisional credit applied if eligible'},{t:'system',text:'Push notification with case status'}],
+        web:   [{t:'system',text:'Same + email confirmation with case details'}],
+        pain:  ['No proactive case updates; users call in to check'],
+        oppty: ['Automated status updates at each case milestone'],
+        kpi:   ['Provisional credit rate; support contacts per dispute case'] },
+      { name:'Resolution',
+        mobile:[{t:'system',text:'Push notification with outcome'},{t:'user',text:'Views resolution detail in dispute history'}],
+        web:   [{t:'system',text:'Email + in-app notification with full decision detail'},{t:'user',text:'Downloads resolution letter if needed'}],
+        pain:  [],
+        oppty: ['Post-dispute CSAT survey to improve process'],
+        kpi:   ['Resolution time (<10 business days target); dispute win rate for customer'] },
+    ]
+  },
+  ]
+},
+
+{
+  id:'wallets', name:'Digital Wallets', emoji:'📲', accent:'#36A6AC', accentDim:'rgba(54,166,172,0.12)',
+  stages:[
+  {
+    name:'Setup',
+    steps:[
+      { name:'Add Card to Wallet',
+        mobile:[{t:'user',text:'Taps "Add to Apple / Google Pay" from card screen'},{t:'system',text:'Encrypted token sent to device wallet; biometric confirm'}],
+        web:   [{t:'user',text:'N/A — web cannot provision to device wallet'},{t:'system',text:'Dashboard shows wallet status (active / not active)'}],
+        pain:  ['Setup failure gives generic error with no resolution path'],
+        oppty: ['Prompt to add wallet immediately on card activation','Troubleshooting guide surfaced on first failed attempt'],
+        kpi:   ['Wallet provisioning success rate; enrolment rate of active cardholders (>60% target)'] },
+      { name:'Bank Verification',
+        mobile:[{t:'system',text:'Step-up verification: in-app OTP or biometric'},{t:'system',text:'Token activated; card shown as ready in wallet'}],
+        web:   [{t:'system',text:'N/A'}],
+        pain:  ['OTP step-up adds friction vs competitors with smoother flows'],
+        oppty: ['Use biometric-only step-up to remove OTP friction'],
+        kpi:   ['Step-up completion rate; drop-off at OTP step'] },
+    ]
+  },
+  {
+    name:'Transactions',
+    steps:[
+      { name:'Make Payment',
+        mobile:[{t:'user',text:'Double-taps home/side button; authenticates with Face/Touch ID'},{t:'user',text:'Holds phone to contactless terminal'}],
+        web:   [{t:'user',text:'N/A — contactless is mobile/wearable only'}],
+        pain:  ['Wallet not defaulting to correct card when multiple cards added'],
+        oppty: ['Smart default: auto-select card based on spend category'],
+        kpi:   ['% card transactions via wallet; wallet transaction value; acceptance rate'] },
+      { name:'Notification & Record',
+        mobile:[{t:'system',text:'Instant push with merchant name + amount'},{t:'user',text:'Transaction appears in app with wallet badge'}],
+        web:   [{t:'system',text:'Transaction visible in web dashboard in real time with wallet badge'}],
+        pain:  ['Token suspension after card freeze not communicated clearly'],
+        oppty: ['In-app alert when wallet is auto-suspended due to card freeze'],
+        kpi:   ['Push notification open rate; wallet transaction categorisation accuracy'] },
+    ]
+  },
+  {
+    name:'Management',
+    steps:[
+      { name:'View & Manage',
+        mobile:[{t:'user',text:'Views all enrolled wallets on card detail screen'},{t:'user',text:'Removes card from wallet via Apple/Google Wallet app'}],
+        web:   [{t:'user',text:'Dashboard → Wallet section shows enrolled devices + status'},{t:'user',text:'Can remotely remove token from any enrolled device'}],
+        pain:  ['Lost device — no easy way to remove wallet token remotely from mobile app'],
+        oppty: ['Remote token wipe from any device without calling support'],
+        kpi:   ['Remote token removal usage; tokens per active cardholder'] },
+      { name:'Linked Spend Insights',
+        mobile:[{t:'user',text:'Filters transaction history by wallet type'},{t:'system',text:'Weekly Apple/Google Pay spend summary card'}],
+        web:   [{t:'user',text:'Wallet-linked spend visible in expense reporting'},{t:'system',text:'Exportable to accountancy integration'}],
+        pain:  [],
+        oppty: ['Wallet spend breakdown by category for business expense tracking'],
+        kpi:   ['Wallet spend report view rate; export usage'] },
+    ]
+  },
+  ]
+},
+
+{
+  id:'team', name:'Team Management', emoji:'👥', accent:'#00A363', accentDim:'rgba(0,163,99,0.12)',
+  stages:[
+  {
+    name:'Invite Members',
+    steps:[
+      { name:'Initiate Invite',
+        mobile:[{t:'user',text:'Taps "Team" in bottom nav → taps "+" button'}],
+        web:   [{t:'user',text:'Left nav → Team → "Invite Member" button'}],
+        pain:  ['Invite flow buried in settings on mobile'],
+        oppty: ['Surface "Invite your team" prompt during onboarding checklist'],
+        kpi:   ['Invite initiation rate; % businesses with 2+ members'] },
+      { name:'Enter Details & Role',
+        mobile:[{t:'user',text:'Enters invitee email; selects role from list'},{t:'system',text:'Role description shown to prevent misconfiguration'}],
+        web:   [{t:'user',text:'Same + bulk invite via CSV upload for 5+ people'},{t:'system',text:'Bulk validation: flags duplicates and invalid emails'}],
+        pain:  ['Bulk invite not available on mobile','Role selection made without understanding permissions'],
+        oppty: ['Role comparison tooltip on mobile','Suggest appropriate role based on job title input'],
+        kpi:   ['Bulk invite adoption rate; role selection accuracy'] },
+      { name:'Send & Track',
+        mobile:[{t:'system',text:'Magic link emailed; status shows "Pending" in team list'},{t:'system',text:'Resend button visible after 24 hrs with no action'}],
+        web:   [{t:'system',text:'Same; admin sees sent date + expiry countdown'},{t:'user',text:'Can cancel pending invite before acceptance'}],
+        pain:  ['Magic link expires after 48 hrs with no automatic resend','Invitee receives no reminder if they miss it'],
+        oppty: ['Auto-resend at 24 hrs with friendly reminder copy','WhatsApp / Slack invite option alongside email'],
+        kpi:   ['Invite acceptance rate (>70% within 7 days target); expiry rate'] },
+    ]
+  },
+  {
+    name:'Member Onboarding',
+    steps:[
+      { name:'Invitee Accepts',
+        mobile:[{t:'user',text:'Invitee clicks link → downloads app → completes ID check'},{t:'system',text:'ID verified; account access granted for assigned role'}],
+        web:   [{t:'user',text:'Invitee clicks link → completes ID verification on web'},{t:'system',text:'Same access grant'}],
+        pain:  ['ID check required for all invitees; friction for lower-risk roles'],
+        oppty: ['Tiered KYC: lighter check for Viewer / Approver roles'],
+        kpi:   ['Invitee ID completion rate; time from invite to active member'] },
+      { name:'First Login',
+        mobile:[{t:'user',text:'Sees role-appropriate home screen with guided tour'},{t:'system',text:'Admin notified that new member is now active'}],
+        web:   [{t:'user',text:'Same role-tailored dashboard view'},{t:'system',text:'Admin email: "John Smith has joined your team"'}],
+        pain:  [],
+        oppty: ['Role-specific onboarding tips for first 3 sessions'],
+        kpi:   ['D1 / D7 retention for new team members; guided tour completion rate'] },
+    ]
+  },
+  {
+    name:'Manage Roles',
+    steps:[
+      { name:'Change Role',
+        mobile:[{t:'user',text:'Taps member → "Change role" → selects new role'},{t:'system',text:'Permissions updated instantly; member notified'}],
+        web:   [{t:'user',text:'Inline dropdown in member table; save with one click'},{t:'user',text:'Custom permission matrix available for granular control'}],
+        pain:  ['Custom permissions only available on web'],
+        oppty: ['Bring basic custom permission toggles to mobile'],
+        kpi:   ['Role change frequency; % teams using custom permissions'] },
+      { name:'Approval Workflows',
+        mobile:[{t:'user',text:'Approver receives push: "Payment of £X needs your approval"'},{t:'user',text:'Approves or rejects with biometric confirm'}],
+        web:   [{t:'user',text:'Approval queue visible in dashboard'},{t:'user',text:'Bulk approve / reject for multiple pending payments'}],
+        pain:  ['Approver not always available; payments stuck in queue'],
+        oppty: ['Set deputy approver; time-limited auto-approval rules'],
+        kpi:   ['Avg. approval response time; % payments approved same-day'] },
+    ]
+  },
+  {
+    name:'Offboard Members',
+    steps:[
+      { name:'Remove Member',
+        mobile:[{t:'user',text:'Taps member → "Remove" → confirms'},{t:'system',text:'All sessions revoked; card suspended; scheduled payments paused'}],
+        web:   [{t:'user',text:'"Deactivate" with summary of impact shown first'},{t:'system',text:'Same immediate revocation; audit log entry created'}],
+        pain:  ['No undo — accidental removal is irreversible','Admin not shown what will be affected before confirming'],
+        oppty: ['30-second undo window after removal','Pre-removal impact summary: "X scheduled payments will be paused"'],
+        kpi:   ['Time to full access revocation (<60 sec target); accidental removal rate'] },
+      { name:'Spend Control',
+        mobile:[{t:'user',text:'Taps member → "Spend limits" → sets daily / monthly cap'},{t:'system',text:'Limit applied immediately; member notified'}],
+        web:   [{t:'user',text:'Same + category-level limits (e.g. no travel >£500)'},{t:'system',text:'Policy PDF export for HR / finance records'}],
+        pain:  ['Category limits only on web; inconsistent experience'],
+        oppty: ['Bring category limits to mobile','Expense policy builder with shareable link'],
+        kpi:   ['% members with spend limits set; limit breach rate'] },
+    ]
+  },
+  ]
+},
+
+{
+  id:'accounts', name:'Accounts', emoji:'🏦', accent:'#C4FFD5', accentDim:'rgba(196,255,213,0.10)',
+  stages:[
+  {
+    name:'Open Account',
+    steps:[
+      { name:'Initiate Opening',
+        mobile:[{t:'user',text:'Taps "Accounts" → "+" → selects account type'}],
+        web:   [{t:'user',text:'Accounts section → "Open new account" → type selection with comparison table'}],
+        pain:  ['Account type differences not explained on mobile'],
+        oppty: ['Short explainer cards for each account type (30 words max)'],
+        kpi:   ['Account open initiation rate; type selection distribution'] },
+      { name:'Choose Type & Name',
+        mobile:[{t:'user',text:'Selects: Current / Savings / Pot / Currency (GBP,EUR,USD)'},{t:'user',text:'Names account and picks colour / emoji'}],
+        web:   [{t:'user',text:'Same; comparison table shows interest rates + features'},{t:'user',text:'Same naming and personalisation'}],
+        pain:  [],
+        oppty: ['Suggest account name based on business context (e.g. "Tax Pot", "Payroll")'],
+        kpi:   ['% accounts with custom name; multi-account adoption rate (target: 2+/business)'] },
+      { name:'Account Live',
+        mobile:[{t:'system',text:'Account card appears instantly in account list'},{t:'system',text:'Sort code + account number generated immediately'}],
+        web:   [{t:'system',text:'Same + welcome email with account details'}],
+        pain:  [],
+        oppty: ['Prompt to set up a standing order into new savings account immediately'],
+        kpi:   ['Time to first transaction on new account; account utility rate at 30 days'] },
+    ]
+  },
+  {
+    name:'Manage Accounts',
+    steps:[
+      { name:'View Details',
+        mobile:[{t:'user',text:'Taps account → sees balance, sort code, account no.'},{t:'user',text:'One-tap copy for sort code / account number'}],
+        web:   [{t:'user',text:'Same with prominent copy buttons and IBAN display'}],
+        pain:  [],
+        oppty: ['Share account details as PDF or QR code for invoicing'],
+        kpi:   ['Account detail copy usage; QR share rate'] },
+      { name:'Browse Transactions',
+        mobile:[{t:'user',text:'Pull-to-refresh; filters: date range, type, amount, merchant'},{t:'system',text:'Transactions appear in real time as they process'}],
+        web:   [{t:'user',text:'Sortable table with advanced filter combinations'},{t:'user',text:'Keyword search across all transactions'}],
+        pain:  ['Keyword search not available on mobile','Only 3 months history visible on mobile vs 12 on web'],
+        oppty: ['Extend mobile history to 12 months','Add keyword search to mobile transaction list'],
+        kpi:   ['Search / filter usage rate; scroll depth in transaction list'] },
+      { name:'Download Statement',
+        mobile:[{t:'user',text:'Tap → Statement → select period → PDF download'},{t:'system',text:'PDF generated in <5 sec; opens in native viewer'}],
+        web:   [{t:'user',text:'Same + CSV export option; scheduled statement emails available'}],
+        pain:  ['No CSV export on mobile; required for accountants'],
+        oppty: ['Add CSV export to mobile','Allow scheduled monthly statement emails'],
+        kpi:   ['Statement download rate; CSV vs PDF preference split'] },
+    ]
+  },
+  {
+    name:'Pots & Savings',
+    steps:[
+      { name:'Create Pot',
+        mobile:[{t:'user',text:'Taps "New Pot" → names it → sets target amount + auto-save rule'}],
+        web:   [{t:'user',text:'Same; additional rule options: % of inflow, round-up, fixed schedule'}],
+        pain:  ['Auto-save rule configuration limited on mobile'],
+        oppty: ['AI-suggested pot names and targets based on cash flow patterns'],
+        kpi:   ['Pot creation rate; % with auto-save rule enabled'] },
+      { name:'Save & Track',
+        mobile:[{t:'system',text:'Auto-save runs per rule; pot balance updates in real time'},{t:'user',text:'Progress bar toward target shown on pot card'}],
+        web:   [{t:'system',text:'Same; projected completion date shown'},{t:'user',text:'Cash flow chart showing pot contributions over time'}],
+        pain:  [],
+        oppty: ['Goal sharing: share progress with accountant or stakeholder'],
+        kpi:   ['Avg. pot balance; target achievement rate; auto-save rule adherence'] },
+    ]
+  },
+  {
+    name:'Close Account',
+    steps:[
+      { name:'Initiate Closure',
+        mobile:[{t:'user',text:'Settings → Accounts → "Close account"'},{t:'system',text:'Shows blockers: pending DDs, scheduled payments'}],
+        web:   [{t:'user',text:'Same with detailed blocker list and resolution links'}],
+        pain:  ['Closure blocked by obscure DDs user forgot about'],
+        oppty: ['One-click resolve: cancel all blockers and proceed'],
+        kpi:   ['Closure initiation rate; closure abandonment rate (due to blockers)'] },
+      { name:'Sweep & Close',
+        mobile:[{t:'user',text:'Auto-suggested transfer of remaining balance to primary account'},{t:'user',text:'Confirms closure; account archived'}],
+        web:   [{t:'user',text:'Choose destination for remaining balance'},{t:'system',text:'Account archived with 7-year statement retention'}],
+        pain:  [],
+        oppty: ['Exit survey to capture closure reason; feed into product roadmap'],
+        kpi:   ['Closure completion rate; exit survey response rate; time to full closure'] },
+    ]
+  },
+  ]
+},
+
+{
+  id:'accountancy', name:'Accountancy', emoji:'📊', accent:'#F7871D', accentDim:'rgba(247,135,29,0.10)',
+  stages:[
+  {
+    name:'Connect',
+    steps:[
+      { name:'Discover Integrations',
+        mobile:[{t:'user',text:'Settings → Integrations → Accountancy'}],
+        web:   [{t:'user',text:'Prominent "Integrations" section in dashboard sidebar'}],
+        pain:  ['Integration section hard to find; not in main nav'],
+        oppty: ['Surface integration prompt during onboarding checklist','Contextual upsell when user views transaction list for first time'],
+        kpi:   ['Integration section visit rate; conversion to connection start'] },
+      { name:'Select Software',
+        mobile:[{t:'user',text:'Browses: Xero, QuickBooks, FreeAgent, Sage, ANNA, Wave'}],
+        web:   [{t:'user',text:'Same with feature comparison table and user reviews'}],
+        pain:  ['Limited to 6 integrations; some users use niche software'],
+        oppty: ['Open API / Zapier connector for long-tail accounting tools','Partnership programme for co-marketing with accountancy platforms'],
+        kpi:   ['Most-selected integrations; connection start rate by platform'] },
+      { name:'OAuth Authorise',
+        mobile:[{t:'user',text:'Tapped "Connect" → OAuth redirect to accountancy platform'},{t:'user',text:'Grants permissions; redirected back to app'}],
+        web:   [{t:'user',text:'Same OAuth flow in browser'},{t:'system',text:'Connection validated; first sync triggered immediately'}],
+        pain:  ['OAuth failure gives generic error with no actionable steps','Some users deny all permissions then wonder why sync fails'],
+        oppty: ['Granular permission explanation before OAuth redirect','Specific error codes with step-by-step recovery guide'],
+        kpi:   ['OAuth completion rate (step-up from start); connection success rate'] },
+    ]
+  },
+  {
+    name:'Sync & Categorise',
+    steps:[
+      { name:'Auto Sync',
+        mobile:[{t:'system',text:'Transactions sync every 4 hours automatically'},{t:'user',text:'Sync status badge visible on integration settings screen'}],
+        web:   [{t:'system',text:'Same; configurable frequency (1hr / 4hr / daily) on web'},{t:'user',text:'Sync health widget on dashboard with last-sync timestamp'}],
+        pain:  ['4-hour delay frustrates users wanting real-time sync'],
+        oppty: ['Webhook-based real-time sync for Xero and QuickBooks','Manual "Sync now" always available as fallback'],
+        kpi:   ['Sync success rate; avg. sync latency; sync error rate'] },
+      { name:'Categorise',
+        mobile:[{t:'user',text:'Taps uncategorised transaction → suggested category shown'},{t:'user',text:'Confirms or picks alternative from list'}],
+        web:   [{t:'user',text:'Bulk categorisation table; select multiple → assign category'},{t:'system',text:'ML model learns from past corrections to improve suggestions'}],
+        pain:  ['Categories don\'t map to Chart of Accounts for some businesses','Bulk categorisation not on mobile'],
+        oppty: ['Custom category-to-CoA mapping per business','Category rules engine: "Always mark XYZ merchant as Office Supplies"'],
+        kpi:   ['Auto-categorisation acceptance rate; manual correction rate; uncategorised transaction %'] },
+      { name:'Attach Receipts',
+        mobile:[{t:'user',text:'Taps transaction → camera icon → scans receipt'},{t:'system',text:'OCR extracts amount + date; auto-matches to transaction'}],
+        web:   [{t:'user',text:'Drag-and-drop receipt file onto transaction row'},{t:'system',text:'Same OCR matching'}],
+        pain:  ['OCR fails on crumpled / low-light receipts','Manual receipt matching takes time for high-volume businesses'],
+        oppty: ['Inbox-style receipt email forwarding (receipts@company.bankname.com)','Receipt auto-match for transactions within ±5% of scanned amount'],
+        kpi:   ['Receipt attachment rate; OCR match accuracy; receipts-per-txn ratio'] },
+    ]
+  },
+  {
+    name:'Manage Sync',
+    steps:[
+      { name:'Monitor Health',
+        mobile:[{t:'user',text:'Settings → Integration → sees last sync time + error count'},{t:'system',text:'Push notification if sync fails 2× in a row'}],
+        web:   [{t:'user',text:'Integration health widget: green/amber/red status'},{t:'system',text:'Email alert for sync failure; detailed error log available'}],
+        pain:  ['Silent sync failures accumulate; user discovers gap weeks later'],
+        oppty: ['Weekly sync health digest email','Proactive support outreach if sync fails for 48+ hours'],
+        kpi:   ['Sync failure detection time; % failures resolved within 24 hrs'] },
+      { name:'Fix Errors',
+        mobile:[{t:'user',text:'Taps error → guided fix: usually re-authenticate or adjust permissions'}],
+        web:   [{t:'user',text:'Detailed error log; bulk error fix mode for common issues'},{t:'system',text:'Duplicate detection + merge suggestions'}],
+        pain:  ['Duplicate transactions appear in Xero after re-sync; hard to clean up'],
+        oppty: ['Automated duplicate detection with one-click merge','De-dupe wizard for users with historical duplicates'],
+        kpi:   ['Error self-resolution rate; duplicate occurrence rate'] },
+      { name:'Disconnect',
+        mobile:[{t:'user',text:'Settings → Integration → "Disconnect" → confirms'},{t:'system',text:'OAuth token revoked; sync stops immediately'}],
+        web:   [{t:'user',text:'Same with data retention option: keep historical categories or clear'},{t:'system',text:'Audit log entry; partner platform notified'}],
+        pain:  [],
+        oppty: ['Exit survey: why disconnecting? Use to improve integration quality'],
+        kpi:   ['Integration churn rate; reconnection rate within 30 days'] },
+    ]
+  },
+  ]
+},
+
+{
+  id:'support', name:'Help & Support', emoji:'🎧', accent:'#00703E', accentDim:'rgba(0,112,62,0.12)',
+  stages:[
+  {
+    name:'Self-Service',
+    steps:[
+      { name:'Access Help',
+        mobile:[{t:'user',text:'Taps "?" icon in nav; or contextual "?" within any feature screen'}],
+        web:   [{t:'user',text:'Help icon in top nav; contextual "?" next to complex fields'}],
+        pain:  ['Help entry point inconsistent across different sections'],
+        oppty: ['Universal "?" icon pinned to every screen; contextually smart'],
+        kpi:   ['Help section entry rate; % entries from contextual vs main nav'] },
+      { name:'Search & Browse',
+        mobile:[{t:'user',text:'Searches help centre; browses article categories'},{t:'system',text:'AI-powered search returns relevant results + related articles'}],
+        web:   [{t:'user',text:'Same; articles open in side panel to avoid losing context'},{t:'system',text:'Search with natural language understanding'}],
+        pain:  ['Search returns no results for niche or new feature queries'],
+        oppty: ['AI chat that answers directly from help content','"Was this helpful?" drives content improvement loop'],
+        kpi:   ['Search success rate (result clicked); self-serve resolution rate (>60% target)'] },
+      { name:'Watch Tutorial',
+        mobile:[{t:'user',text:'In-app video player; can follow along with app behind'},{t:'system',text:'Progress saved; resume from last position'}],
+        web:   [{t:'user',text:'Embedded video with chapter navigation'},{t:'system',text:'Same progress tracking'}],
+        pain:  ['Videos out of date after product updates'],
+        oppty: ['Interactive product walkthrough using real UI (not video)'],
+        kpi:   ['Tutorial view rate; tutorial completion rate; support contact rate after tutorial'] },
+    ]
+  },
+  {
+    name:'Live Chat',
+    steps:[
+      { name:'Start Chat',
+        mobile:[{t:'user',text:'Taps "Chat with us" → estimated wait time shown'},{t:'system',text:'AI bot initiates: asks for issue category'}],
+        web:   [{t:'user',text:'Chat widget bottom-right; same bot triage'},{t:'system',text:'Bot handles top 20 intents; escalates to human if needed'}],
+        pain:  ['Wait time not shown before starting; users abandon after starting chat','Bot loops on unrecognised intent with no escalation path'],
+        oppty: ['Show queue position + estimated wait before user commits','Guaranteed escalation after 2 failed bot attempts'],
+        kpi:   ['Chat start rate; bot resolution rate; bot-to-human escalation rate'] },
+      { name:'Chat Session',
+        mobile:[{t:'user',text:'Real-time chat; can share screenshots via camera'},{t:'system',text:'Agent can push links, forms and account-specific data to user'}],
+        web:   [{t:'user',text:'Same; can share files and screen share (desktop only)'},{t:'system',text:'Agent sees account context: recent transactions, open cases'}],
+        pain:  ['Screen share not available on mobile'],
+        oppty: ['Co-browsing mode where agent can guide user through app'],
+        kpi:   ['First contact resolution rate; avg. handle time; CSAT score (>4.2/5 target)'] },
+      { name:'Post-Chat',
+        mobile:[{t:'system',text:'Transcript emailed automatically after chat ends'},{t:'user',text:'CSAT survey: 1-tap rating (1–5 stars)'}],
+        web:   [{t:'system',text:'Same + downloadable PDF transcript'},{t:'user',text:'Optional comment field on CSAT survey'}],
+        pain:  ['CSAT survey fatigue if shown after every interaction'],
+        oppty: ['Smart sampling: only survey 1 in 3 chats; prioritise negative signals'],
+        kpi:   ['CSAT response rate; CSAT score trend; transcript open rate'] },
+    ]
+  },
+  {
+    name:'Tickets',
+    steps:[
+      { name:'Raise Ticket',
+        mobile:[{t:'user',text:'Help → "Raise a ticket" → selects category → describes issue'},{t:'user',text:'Attaches screenshots via camera or photo library'}],
+        web:   [{t:'user',text:'Same + priority selector; file drag-and-drop'},{t:'user',text:'Can link directly to relevant transaction or account'}],
+        pain:  ['Category list not intuitive; users pick wrong category → wrong team'],
+        oppty: ['AI triage: suggest category based on issue description','Link to relevant transaction / account inline from ticket form'],
+        kpi:   ['Ticket submission completion rate; misrouting rate'] },
+      { name:'Track & Update',
+        mobile:[{t:'system',text:'Push notification with ticket reference number'},{t:'user',text:'Notifications → "My tickets" → status timeline'}],
+        web:   [{t:'system',text:'Email + in-app notification'},{t:'user',text:'Support portal with full ticket history and comment thread'}],
+        pain:  ['No proactive updates; users call in to check status','Reply to email creates new ticket instead of updating thread'],
+        oppty: ['Automated status notification at each SLA milestone','Unified inbox: email replies append to same ticket'],
+        kpi:   ['Inbound "status check" contact rate; % tickets resolved without customer chasing'] },
+      { name:'Resolution & Close',
+        mobile:[{t:'system',text:'Push: "Your ticket has been resolved"'},{t:'user',text:'Can reopen within 7 days if issue recurs'}],
+        web:   [{t:'system',text:'Email with resolution summary + actions taken'},{t:'user',text:'Same reopen window; can rate resolution quality'}],
+        pain:  ['Tickets marked resolved before customer confirms satisfaction'],
+        oppty: ['Customer-confirmed closure: ticket stays open until user confirms resolved'],
+        kpi:   ['Resolution SLA adherence (P1 <4hr, P2 <24hr); reopen rate; resolution CSAT'] },
+    ]
+  },
+  {
+    name:'Feedback',
+    steps:[
+      { name:'In-App Feedback',
+        mobile:[{t:'user',text:'Post-interaction CSAT prompt (1 tap, 1–5 stars)'},{t:'user',text:'"Suggest a feature" in Help menu → submits free text'}],
+        web:   [{t:'user',text:'Same inline survey; optional comment field'},{t:'user',text:'Feature request form with category + upvote of existing requests'}],
+        pain:  ['Feature requests submitted but users never hear back; feel ignored'],
+        oppty: ['Public product roadmap with status updates on top-voted requests'],
+        kpi:   ['CSAT survey response rate; feature request volume by category'] },
+      { name:'NPS Programme',
+        mobile:[{t:'system',text:'In-app NPS survey at Day 30, Day 90, Day 180 post-activation'},{t:'user',text:'Rates 0–10 + optional comment'}],
+        web:   [{t:'system',text:'Same timing; shown as dismissible modal'},{t:'user',text:'Detractors (0–6) offered immediate live chat or callback'}],
+        pain:  ['NPS shown at fixed intervals regardless of recent negative experience'],
+        oppty: ['Trigger NPS after key moments (e.g. first bulk payment) not just time','Detractor follow-up within 24 hrs from dedicated rescue team'],
+        kpi:   ['NPS score (>40 target); response rate; detractor follow-up rate; change after follow-up'] },
+    ]
+  },
+  ]
+},
+{
+  id:'invoicing', name:'Invoicing', emoji:'🧾', accent:'#5BFF9A', accentDim:'rgba(91,255,154,0.10)',
+  stages:[
+  {
+    name:'Setup',
+    steps:[
+      { name:'Enable Invoicing',
+        mobile:[{t:'user',text:'Taps "Invoicing" in app nav → "Get started"'},{t:'system',text:'Invoicing module activated on account; default settings applied'}],
+        web:   [{t:'user',text:'Dashboard → Invoicing → "Enable Invoicing"'},{t:'system',text:'Same activation; guided setup wizard launched'}],
+        pain:  ['Invoicing not discoverable in main nav for existing users','Setup wizard too long — users abandon before completing'],
+        oppty: ['Prompt to enable Invoicing during onboarding checklist','One-click setup with smart defaults; customise later'],
+        kpi:   ['Invoicing activation rate; setup completion rate; time to first invoice'] },
+      { name:'Business Identity',
+        mobile:[{t:'user',text:'Adds business name, logo (camera or photo library), address'},{t:'system',text:'Logo cropped and previewed on sample invoice'}],
+        web:   [{t:'user',text:'Same; drag-and-drop logo upload; live invoice preview panel'},{t:'system',text:'Logo resized and stored; preview updates in real time'}],
+        pain:  ['Logo upload fails on low-quality or oversized images','No preview on mobile before saving'],
+        oppty: ['Auto-pull business name + address from account registration data','Live mobile preview of how invoice will look to recipient'],
+        kpi:   ['Logo upload rate; % invoices sent with logo; preview interaction rate'] },
+      { name:'Invoice Defaults',
+        mobile:[{t:'user',text:'Sets default payment terms (e.g. 30 days), currency, tax rate'},{t:'system',text:'Defaults saved; applied to all new invoices automatically'}],
+        web:   [{t:'user',text:'Same; additional options: invoice number prefix, footer notes, bank detail display'},{t:'system',text:'Same default save; preview shows footer + bank details'}],
+        pain:  ['Tax rate options not localised — users unsure which rate to apply','Invoice number sequencing not clear'],
+        oppty: ['Auto-detect VAT rate based on business type + jurisdiction','Explain invoice numbering with example (e.g. INV-001)'],
+        kpi:   ['Default completion rate; % invoices with tax applied; % with custom payment terms'] },
+      { name:'Connect Bank Account',
+        mobile:[{t:'user',text:'Selects which business account to receive payments into'},{t:'system',text:'Account sort code + account no. added to invoice template'}],
+        web:   [{t:'user',text:'Same; option to display multiple bank accounts (e.g. GBP + EUR)'},{t:'system',text:'Bank details previewed on invoice footer'}],
+        pain:  ['Users unsure which account to use if they have multiple'],
+        oppty: ['Recommend primary current account by default; easily changeable per invoice'],
+        kpi:   ['% invoices with bank details shown; payment-to-invoice account match rate'] },
+    ]
+  },
+  {
+    name:'Create Invoice',
+    steps:[
+      { name:'Start New Invoice',
+        mobile:[{t:'user',text:'Taps "+" → "New Invoice"; invoice number auto-generated'},{t:'system',text:'Pre-fills date, due date (based on default terms), invoice number'}],
+        web:   [{t:'user',text:'Invoicing dashboard → "New Invoice" button'},{t:'system',text:'Same pre-fill; full-page editor with live preview panel'}],
+        pain:  ['No live preview on mobile while building invoice','Auto-generated invoice numbers not editable easily'],
+        oppty: ['Split-screen editor + preview on tablet/large mobile','Allow invoice number override with format validation'],
+        kpi:   ['Invoice creation start rate; avg. time to complete invoice; draft save rate'] },
+      { name:'Add Client',
+        mobile:[{t:'user',text:'Types client name → selects from saved clients or adds new'},{t:'system',text:'Client details (name, email, address) auto-filled from saved contact'}],
+        web:   [{t:'user',text:'Same; can import clients from CSV or sync from CRM'},{t:'system',text:'Duplicate client detection; merge suggestion if similar name found'}],
+        pain:  ['No client address book on first use — must re-enter details every time','Duplicate clients created due to no deduplication'],
+        oppty: ['CSV client import on first invoice to seed address book','CRM/Xero contact sync to avoid duplicate entry'],
+        kpi:   ['% invoices using saved client vs new entry; client re-use rate; duplicate rate'] },
+      { name:'Add Line Items',
+        mobile:[{t:'user',text:'Taps "Add item" → enters description, quantity, unit price'},{t:'system',text:'Line total calculated automatically; VAT applied if configured'}],
+        web:   [{t:'user',text:'Inline table editing; tab between fields; bulk paste from spreadsheet'},{t:'system',text:'Subtotal, tax, and total calculated live; discounts applied if set'}],
+        pain:  ['Adding many line items on mobile is slow and error-prone','No saved product/service library — same items re-entered repeatedly'],
+        oppty: ['Saved products/services library with quick-add tap','Bulk paste from clipboard (web); CSV import for long item lists'],
+        kpi:   ['Avg. line items per invoice; saved item library adoption rate; invoice edit rate after send'] },
+      { name:'Review & Customise',
+        mobile:[{t:'user',text:'Reviews invoice summary; edits payment terms, adds notes'},{t:'system',text:'Recalculates totals on any edit; warns if due date is in the past'}],
+        web:   [{t:'user',text:'Full live preview; can change template colour, font, layout'},{t:'system',text:'PDF rendered in preview; accessible colour contrast checked'}],
+        pain:  ['Limited customisation on mobile — feels like a lesser experience','Template options not obvious; users send default-styled invoice'],
+        oppty: ['Brand colour applied automatically from logo colour palette','Customisation prompt after first invoice is sent'],
+        kpi:   ['% invoices with custom branding; template change rate; notes field usage rate'] },
+    ]
+  },
+  {
+    name:'Send Invoice',
+    steps:[
+      { name:'Choose Send Method',
+        mobile:[{t:'user',text:'Taps "Send" → chooses: Email, WhatsApp share, Copy link, Download PDF'},{t:'system',text:'PDF generated; email drafted with invoice attached'}],
+        web:   [{t:'user',text:'Same options + "Send via post" integration for physical invoices'},{t:'system',text:'Same PDF generation; email preview shown before sending'}],
+        pain:  ['Email send fails silently if client email address has a typo','No read receipt or open tracking'],
+        oppty: ['Email validation before send; suggest correction for common typos','Invoice open tracking: notify when client views invoice'],
+        kpi:   ['Send method split (email/link/PDF); email delivery rate; invoice open rate'] },
+      { name:'Invoice Delivered',
+        mobile:[{t:'system',text:'Confirmation: "Invoice sent to client@email.com"'},{t:'system',text:'Invoice moves to "Sent" status in invoice list'}],
+        web:   [{t:'system',text:'Same confirmation + email delivery receipt'},{t:'system',text:'Invoice appears in sent list with sent timestamp'}],
+        pain:  ['No confirmation that email was received (vs delivered)'],
+        oppty: ['"Viewed" status when client opens the invoice link','Resend shortcut from invoice detail screen'],
+        kpi:   ['Delivery success rate; % invoices viewed by client within 48 hrs'] },
+      { name:'Client Pays',
+        mobile:[{t:'system',text:'Payment notification pushed when funds received'},{t:'user',text:'Invoice marked "Paid" automatically; visible in invoice list'}],
+        web:   [{t:'system',text:'Email + in-app notification; invoice status updated to "Paid"'},{t:'user',text:'Payment date, amount, and method recorded on invoice'}],
+        pain:  ['Manual bank transfer payments not auto-matched to invoice','Partial payments not handled — invoice stays "Unpaid"'],
+        oppty: ['Open Banking payment link on invoice for one-click pay','Partial payment tracking with remaining balance shown'],
+        kpi:   ['% invoices paid; avg. days to payment; payment method split; overdue rate'] },
+    ]
+  },
+  {
+    name:'Manage Invoices',
+    steps:[
+      { name:'Track Invoice Status',
+        mobile:[{t:'user',text:'Views invoice list filtered by: Draft / Sent / Viewed / Paid / Overdue'},{t:'system',text:'Status badges update in real time; overdue invoices highlighted red'}],
+        web:   [{t:'user',text:'Same + sortable table; filter by client, date range, amount'},{t:'system',text:'Dashboard summary: total outstanding, overdue, paid this month'}],
+        pain:  ['Overdue invoices not surfaced prominently enough','No bulk status view for high-volume businesses'],
+        oppty: ['Overdue invoice dashboard widget with one-tap chase action','Ageing report: 0–30, 30–60, 60–90 days overdue buckets'],
+        kpi:   ['Dashboard visit rate; overdue invoice rate; avg. invoice age at payment'] },
+      { name:'Chase Overdue',
+        mobile:[{t:'user',text:'Taps overdue invoice → "Send reminder" → selects template or custom message'},{t:'system',text:'Reminder email sent; chase log entry created on invoice'}],
+        web:   [{t:'user',text:'Same + bulk select overdue invoices → send reminders in one action'},{t:'system',text:'Automated reminder schedule if enabled (e.g. 7, 14, 30 days overdue)'}],
+        pain:  ['Chasing clients feels awkward — no professional template provided','No automated reminders; relies entirely on manual action'],
+        oppty: ['Pre-written polite chase email templates','Automated reminder schedule configurable per client or globally'],
+        kpi:   ['Chase email send rate; payment conversion rate after chase; avg. days overdue at payment'] },
+      { name:'Credit Notes & Edits',
+        mobile:[{t:'user',text:'Taps invoice → "Issue credit note" or "Edit invoice" (draft only)'},{t:'system',text:'Credit note created as linked document; reduces outstanding balance'}],
+        web:   [{t:'user',text:'Same; sent invoices can be voided with audit trail'},{t:'system',text:'Credit note synced to accountancy integration automatically'}],
+        pain:  ['Sent invoices cannot be edited — users must void and re-send','Credit note process not intuitive; users unsure of correct flow'],
+        oppty: ['Guided void-and-reissue flow with client notification','Credit note auto-sync to Xero/QuickBooks removes double-entry'],
+        kpi:   ['Credit note issuance rate; void rate; % credit notes reconciled in accountancy'] },
+    ]
+  },
+  ]
+},
+{
+  id:'billpay', name:'Bill Paying', emoji:'📥', accent:'#F7871D', accentDim:'rgba(247,135,29,0.10)',
+  stages:[
+  {
+    name:'Setup',
+    steps:[
+      { name:'Enable Bill Paying',
+        mobile:[{t:'user',text:'Taps "Bills" in nav → "Get started"'},{t:'system',text:'Bill Paying module activated; inbox created for bill imports'}],
+        web:   [{t:'user',text:'Dashboard → Bills → "Enable Bill Paying"'},{t:'system',text:'Same activation; dedicated bills email address generated (bills@company.bankname.com)'}],
+        pain:  ['Feature not discoverable without being pointed to it','Bills email address not generated on mobile setup — web only'],
+        oppty: ['Surface Bill Paying during onboarding if Invoicing or Accountancy is also enabled','Generate bills email address on both platforms at setup'],
+        kpi:   ['Bill Paying activation rate; bills inbox email adoption rate'] },
+      { name:'Configure Approvals',
+        mobile:[{t:'user',text:'Sets approval rules: bills above £X require approval before payment'},{t:'system',text:'Approval workflow saved; relevant team members notified'}],
+        web:   [{t:'user',text:'Same + multi-tier approval (e.g. >£500 = 1 approver, >£5k = 2 approvers)'},{t:'system',text:'Policy applied to all incoming bills immediately'}],
+        pain:  ['Single approval tier only on mobile; multi-tier requires web','Users skip approval setup and go straight to importing bills'],
+        oppty: ['Smart approval suggestion based on team size and account turnover','Nudge to set approvals when first bill exceeds a threshold'],
+        kpi:   ['Approval rule setup rate; % bills processed with approval vs bypassed'] },
+    ]
+  },
+  {
+    name:'Import Bills',
+    steps:[
+      { name:'Import from Email',
+        mobile:[{t:'user',text:'Forwards supplier invoice email to bills inbox address'},{t:'system',text:'Email received; PDF attachment extracted and queued for processing'}],
+        web:   [{t:'user',text:'Same forwarding; or drag-and-drop files directly into bills inbox'},{t:'system',text:'OCR processes attachment; extracts supplier, amount, due date, reference'}],
+        pain:  ['Forwarding email is clunky — users forget the bills address','OCR fails on handwritten or non-standard invoice layouts'],
+        oppty: ['One-tap "Forward to bills" shortcut in mobile email apps (share sheet integration)','Fallback manual entry with OCR pre-fill where available'],
+        kpi:   ['Email import adoption rate; OCR extraction accuracy; manual correction rate'] },
+      { name:'Upload File',
+        mobile:[{t:'user',text:'Taps "Upload bill" → selects PDF/image from camera or photo library'},{t:'system',text:'OCR processes file; extracts key fields and displays for review'}],
+        web:   [{t:'user',text:'Drag-and-drop PDF/image onto bills inbox; or bulk upload multiple files'},{t:'system',text:'Batch OCR processing; results displayed in review queue'}],
+        pain:  ['Bulk upload not available on mobile — single file at a time only','Poor image quality from phone camera degrades OCR accuracy'],
+        oppty: ['Camera capture guidance: frame, lighting tips for best OCR results','Bulk upload via mobile for teams processing many bills'],
+        kpi:   ['Upload method split (email/upload/camera); bulk upload usage; OCR confidence score distribution'] },
+      { name:'Connect Accountancy',
+        mobile:[{t:'user',text:'Enables sync: bills imported from Xero/QuickBooks automatically'},{t:'system',text:'Bills pulled from accountancy platform on sync schedule'}],
+        web:   [{t:'user',text:'Same; configure which bill statuses to import (e.g. approved only)'},{t:'system',text:'Bi-directional sync: payment status pushed back to accountancy platform'}],
+        pain:  ['Bills duplicated if imported via email AND synced from accountancy','Sync only pulls approved bills — draft bills missed by some users'],
+        oppty: ['Duplicate detection with one-click merge','Configurable import filter: draft, approved, or all'],
+        kpi:   ['Accountancy sync adoption rate; duplicate bill rate; bi-directional sync success rate'] },
+    ]
+  },
+  {
+    name:'Review & Approve',
+    steps:[
+      { name:'Review Extracted Data',
+        mobile:[{t:'user',text:'Reviews OCR-extracted fields: supplier, amount, due date, reference'},{t:'user',text:'Corrects any misread fields; attaches bill to a cost category'}],
+        web:   [{t:'user',text:'Same in table view; side-by-side with original document'},{t:'system',text:'Flags low-confidence OCR fields in amber; suggests corrections'}],
+        pain:  ['Side-by-side document view not available on mobile — hard to verify accuracy','No confidence scoring shown — users trust incorrect OCR results'],
+        oppty: ['Colour-coded confidence indicators on extracted fields','Swipe-to-confirm gesture on mobile for quick review of simple bills'],
+        kpi:   ['Review completion rate; field correction rate; avg. review time per bill'] },
+      { name:'Approve for Payment',
+        mobile:[{t:'user',text:'Approver receives push: "Bill from Supplier X for £Y awaiting approval"'},{t:'user',text:'Reviews bill; approves or rejects with optional comment'}],
+        web:   [{t:'user',text:'Approval queue in bills dashboard; bulk approve with single confirmation'},{t:'system',text:'Approval recorded with timestamp and approver name; audit log updated'}],
+        pain:  ['Approver not notified promptly; bills sit in queue unpaid past due date','No rejection reason captured — submitter does not know why it was rejected'],
+        oppty: ['Escalation: auto-notify second approver if no response in 24 hrs','Mandatory rejection reason field with guided options'],
+        kpi:   ['Approval response time; approval rate vs rejection rate; bills paid late due to approval delay'] },
+      { name:'Assign to Account',
+        mobile:[{t:'user',text:'Selects which business account to pay from'},{t:'system',text:'Balance shown for selected account; warning if insufficient funds'}],
+        web:   [{t:'user',text:'Same; can split payment across multiple accounts'},{t:'system',text:'Projected balance after payment shown; low balance alert if relevant'}],
+        pain:  ['No balance preview before confirming account selection','Split payment across accounts not available on mobile'],
+        oppty: ['Smart account suggestion based on bill currency and account type','Scheduled payment suggestion if balance insufficient today'],
+        kpi:   ['Account selection accuracy; % bills paid from correct currency account; insufficient fund rate'] },
+    ]
+  },
+  {
+    name:'Pay Bills',
+    steps:[
+      { name:'Schedule or Pay Now',
+        mobile:[{t:'user',text:'Taps "Pay now" or "Schedule for due date"'},{t:'system',text:'Payment created in payments queue; Confirmation of Payee check run'}],
+        web:   [{t:'user',text:'Same + batch schedule: select multiple bills → pay all on due dates'},{t:'system',text:'Same CoP check; batch payment file created for bulk bills'}],
+        pain:  ['CoP check fails for new suppliers — no match causes abandonment','Batch scheduling not available on mobile for high-volume teams'],
+        oppty: ['Trusted supplier list: bypass CoP friction for recurring payees','Batch bill payment on mobile for finance teams on the go'],
+        kpi:   ['Pay now vs schedule split; CoP match rate for new suppliers; batch payment adoption rate'] },
+      { name:'Authorise Payment',
+        mobile:[{t:'user',text:'Biometric or PIN confirmation'},{t:'system',text:'Payment submitted; bill status updated to "Payment Pending"'}],
+        web:   [{t:'user',text:'2FA confirmation; or second approver sign-off for high-value'},{t:'system',text:'Same status update; payment reference written back to bill record'}],
+        pain:  ['High-value bills require second approver but no in-app workflow to request it'],
+        oppty: ['In-app co-authorisation request: notify second signatory directly','Hardware token support for enterprise security requirements'],
+        kpi:   ['Authorisation completion rate; dual-auth usage rate; payment rejection rate'] },
+      { name:'Payment Confirmed',
+        mobile:[{t:'system',text:'Push notification: "Payment to Supplier X sent — £Y"'},{t:'system',text:'Bill status updated to "Paid"; payment reference recorded'}],
+        web:   [{t:'system',text:'Email confirmation + in-app notification'},{t:'system',text:'Bill marked "Paid"; payment date and reference stored on bill record'}],
+        pain:  ['Payment reference not written back to bill automatically for manual bank transfers'],
+        oppty: ['Auto-reconcile payment against bill when Faster Payment clears','Remittance advice email sent to supplier automatically on payment'],
+        kpi:   ['Payment confirmation delivery rate; auto-reconciliation rate; remittance advice send rate'] },
+    ]
+  },
+  {
+    name:'Manage & Reconcile',
+    steps:[
+      { name:'Bills Overview',
+        mobile:[{t:'user',text:'Views bills list filtered by: Pending / Approved / Paid / Overdue'},{t:'system',text:'Total outstanding balance shown at top; overdue bills flagged red'}],
+        web:   [{t:'user',text:'Same + ageing summary, supplier breakdown, and cash flow projection'},{t:'system',text:'Dashboard widget: upcoming bills due in 7 / 30 days with total amounts'}],
+        pain:  ['No cash flow impact view — users surprised by large bills due soon','Overdue bills from suppliers not surfaced as urgently as they should be'],
+        oppty: ['Cash flow calendar: visualise upcoming bill payments against projected balance','Automated supplier statement reconciliation'],
+        kpi:   ['Dashboard visit rate; % bills reviewed before due date; cash flow calendar usage rate'] },
+      { name:'Reconcile with Accountancy',
+        mobile:[{t:'user',text:'Marks bill as reconciled; syncs status to connected accountancy platform'},{t:'system',text:'Reconciliation status and payment details pushed to Xero/QuickBooks'}],
+        web:   [{t:'user',text:'Bulk reconciliation: select multiple paid bills → mark reconciled'},{t:'system',text:'Full payment data (amount, date, reference, account) synced to accountancy'}],
+        pain:  ['Manual reconciliation step required even when payment came from the same bank account','Bulk reconciliation not available on mobile'],
+        oppty: ['Auto-reconcile when payment matches bill amount within ±1%','Reconciliation health score: % of bills fully matched this month'],
+        kpi:   ['Auto-reconciliation rate; manual reconciliation time; % bills unreconciled after 30 days'] },
+      { name:'Supplier Management',
+        mobile:[{t:'user',text:'Views supplier list; taps supplier to see payment history and outstanding bills'},{t:'system',text:'Supplier profile shows: total paid YTD, avg. payment time, outstanding balance'}],
+        web:   [{t:'user',text:'Same + edit supplier bank details, set preferred payment method, add notes'},{t:'system',text:'Supplier payment analytics: on-time payment rate, early payment discount tracking'}],
+        pain:  ['No way to flag a supplier as inactive — they stay in the list forever','Supplier bank details not editable on mobile if they change'],
+        oppty: ['Supplier portal: give suppliers read-only view of their invoice + payment status','Early payment discount alerts when supplier offers discount for early settlement'],
+        kpi:   ['Supplier profile completion rate; avg. payment time per supplier; early payment discount capture rate'] },
+    ]
+  },
+  ]
+},
+];
+
+/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+   BUILDER
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
+function card(type, text) {
+  const labels = { user:'👤 User', system:'⚙️ System' };
+  const showTag = type === 'user' || type === 'system';
+  const isNA = type === 'na';
+  return `<div class="action-card card-${type}">
+    ${showTag ? `<div class="card-type-tag tag-${type}">${labels[type]}</div>` : ''}
+    ${isNA ? `<div class="card-type-tag tag-na">🚫 Not Available</div>` : ''}
+    <div class="card-body">${isNA ? 'Not available on this platform' : text}</div>
+  </div>`;
+}
+
+function buildCell(items, type, stepIdx, totalSteps) {
+  if (!items || items.length === 0) {
+    return `<div class="lane-cell empty"><span class="na-label">—</span></div>`;
+  }
+  let html = `<div class="lane-cell">`;
+  items.forEach(item => {
+    const text = typeof item === 'string' ? item : item.text;
+    let t = typeof item === 'string' ? type : item.t;
+    if (typeof text === 'string' && text.trim().toUpperCase() === 'NOT AVAILABLE') {
+      t = 'na';
+    }
+    html += card(t, text);
+  });
+  html += `</div>`;
+  return html;
+}
+  let html = `<div class="lane-cell">`;
+  items.forEach(item => {
+    const text = typeof item === 'string' ? item : item.text;
+    let t = typeof item === 'string' ? type : item.t;
+    // Detect explicit NOT AVAILABLE marker
+    if (typeof text === 'string' && text.trim().toUpperCase() === 'NOT AVAILABLE') {
+      t = 'na';
+    }
+    html += card(t, text);
+  });
+  html += `</div>`;
+  return html;
+}
+
+// Build one merged board across ALL stages for a product
+function buildProductBoard(prod) {
+  // Flatten: for each stage, tag each step with stage info
+  const allSteps = [];
+  prod.stages.forEach((stage, si) => {
+    stage.steps.forEach((step, stepI) => {
+      allSteps.push({ ...step, stageName: stage.name, stageIndex: si, isFirstOfStage: stepI === 0 });
+    });
+  });
+
+  const N = allSteps.length;
+  const colTemplate = `148px repeat(${N}, minmax(200px, 240px))`;
+
+  let html = `<div class="board-scroll-wrap"><div class="board" style="grid-template-columns:${colTemplate}">`;
+
+  // ── Step header row ───────────────────────────────────
+  // Corner
+  html += `<div class="step-header-cell label-col" style="position:sticky;top:0;left:0;z-index:30;background:var(--ink2);"></div>`;
+
+  allSteps.forEach((step, i) => {
+    const isLast = i === N - 1;
+    // Stage boundary: stronger top accent + stage label when first step of a stage
+    const stageLabel = step.isFirstOfStage
+      ? `<div style="position:absolute;top:10px;left:14px;right:14px;font-family:'JetBrains Mono',monospace;font-size:8px;color:${prod.accent};letter-spacing:0.1em;text-transform:uppercase;font-weight:600;">${step.stageName}</div>`
+      : '';
+    html += `<div class="step-header-cell${isLast ? ' last-step' : ''}" style="position:relative;border-top:3px solid ${step.isFirstOfStage ? prod.accent : prod.accent + '44'};">
+      ${stageLabel}
+      <div class="step-num">STEP ${i + 1}</div>
+      <div class="step-title">${step.name}</div>
+    </div>`;
+  });
+
+  // ── Mobile row ────────────────────────────────────────
+  html += `<div class="lane-label-cell platform-mobile">
+    <span class="lane-name">📱 Mobile</span>
+    <span class="lane-sub">iOS &amp; Android</span>
+    <span class="lane-platform-chip chip-mob">Mobile App</span>
+  </div>`;
+  allSteps.forEach((step, i) => { html += buildCell(step.mobile, 'user', i, N); });
+
+  // ── Web row ───────────────────────────────────────────
+  html += `<div class="lane-label-cell platform-web">
+    <span class="lane-name">🖥️ Web</span>
+    <span class="lane-sub">Browser App</span>
+    <span class="lane-platform-chip chip-web">Web Desktop</span>
+  </div>`;
+  allSteps.forEach((step, i) => { html += buildCell(step.web, 'user', i, N); });
+
+  // ── Divider ───────────────────────────────────────────
+  html += `<div class="lane-label-cell" style="min-height:8px;padding:0;background:var(--line);border-right:2px solid var(--line2)"></div>`;
+  for (let i = 0; i < N; i++) html += `<div style="background:var(--line);border-right:1px solid var(--line);min-height:8px"></div>`;
+
+  // ── Pain Points ───────────────────────────────────────
+  html += `<div class="lane-label-cell pain-lane">
+    <span class="lane-name">⚠️ Pain Points</span>
+    <span class="lane-sub">Friction &amp; drop-off</span>
+  </div>`;
+  allSteps.forEach((step, i) => {
+    const items = (step.pain||[]).map(t => ({ t:'pain', text:t }));
+    html += buildCell(items.length ? items : null, 'pain', i, N);
+  });
+
+  // ── Opportunities ─────────────────────────────────────
+  html += `<div class="lane-label-cell oppty-lane">
+    <span class="lane-name">💡 Opportunities</span>
+    <span class="lane-sub">UX &amp; growth wins</span>
+  </div>`;
+  allSteps.forEach((step, i) => {
+    const items = (step.oppty||[]).map(t => ({ t:'oppty', text:t }));
+    html += buildCell(items.length ? items : null, 'oppty', i, N);
+  });
+
+  // ── KPIs ──────────────────────────────────────────────
+  html += `<div class="lane-label-cell kpi-lane">
+    <span class="lane-name">📊 KPIs &amp; Metrics</span>
+    <span class="lane-sub">How we measure success</span>
+  </div>`;
+  allSteps.forEach((step, i) => {
+    const items = (step.kpi||[]).map(t => ({ t:'kpi', text:t }));
+    html += buildCell(items.length ? items : null, 'kpi', i, N);
+  });
+
+  html += `</div></div>`;
+  return html;
+}
+
+function build() {
+  const tabsEl = document.getElementById('productTabs');
+  const pageEl = document.getElementById('page');
+
+  PRODUCTS.forEach((prod, pi) => {
+    const totalSteps = prod.stages.reduce((a, s) => a + s.steps.length, 0);
+
+    // ── Product tab
+    const tab = document.createElement('button');
+    tab.className = 'tb-tab' + (pi === 0 ? ' active' : '');
+    tab.textContent = `${prod.emoji} ${prod.name}`;
+    if (pi === 0) tab.style.color = prod.accent;
+    tab.addEventListener('click', () => {
+      document.querySelectorAll('.tb-tab').forEach(t => { t.classList.remove('active'); t.style.color = ''; });
+      document.querySelectorAll('.product-panel').forEach(p => p.classList.remove('active'));
+      tab.classList.add('active');
+      tab.style.color = prod.accent;
+      document.getElementById('panel-' + prod.id).classList.add('active');
+    });
+    tabsEl.appendChild(tab);
+
+    // ── Product panel
+    const panel = document.createElement('div');
+    panel.className = 'product-panel' + (pi === 0 ? ' active' : '');
+    panel.id = 'panel-' + prod.id;
+
+    panel.innerHTML = `
+      <div class="prod-banner">
+        <div class="prod-icon" style="background:${prod.accentDim};box-shadow:0 0 20px ${prod.accent}22;font-size:22px;display:flex;align-items:center;justify-content:center;">${prod.emoji}</div>
+        <div>
+          <div class="prod-name" style="color:${prod.accent}">${prod.name}</div>
+          <div class="prod-meta">${prod.stages.length} stages · ${totalSteps} steps · 📱 Mobile &amp; 🖥️ Web Desktop</div>
+        </div>
+        <div class="prod-tags">
+          <span class="prod-tag" style="border-color:${prod.accent}44;color:${prod.accent}">📱 Mobile</span>
+          <span class="prod-tag" style="border-color:${prod.accent}44;color:${prod.accent}">🖥️ Web</span>
+        </div>
+      </div>
+      <div class="scroll-hint"><span class="scroll-hint-arrow">→</span> Scroll right to follow the full journey — stage labels mark each new phase</div>`;
+
+    const boardWrap = document.createElement('div');
+    boardWrap.innerHTML = buildProductBoard(prod);
+    panel.appendChild(boardWrap);
+
+    pageEl.appendChild(panel);
+  });
+}
+
+build();
+</script>
+</body>
+</html>
