@@ -1,0 +1,162 @@
+.page {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 40px 24px;
+}
+
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 28px;
+}
+
+.heading {
+  font-size: 22px;
+  font-weight: 600;
+  color: #111827;
+}
+
+.btnPrimary {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 16px;
+  background: #111827;
+  color: #ffffff;
+  border-radius: 6px;
+  font-size: 14px;
+  font-weight: 500;
+  transition: background 0.15s;
+}
+
+.btnPrimary:hover {
+  background: #1f2937;
+}
+
+/* ── Table ───────────────────────────────────────────────────────────────── */
+
+.tableWrap {
+  background: #ffffff;
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 14px;
+}
+
+.table th {
+  padding: 11px 16px;
+  text-align: left;
+  font-size: 12px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: #6b7280;
+  background: #f9fafb;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.table td {
+  padding: 13px 16px;
+  border-bottom: 1px solid #f3f4f6;
+  color: #374151;
+  vertical-align: middle;
+}
+
+.table tbody tr:last-child td {
+  border-bottom: none;
+}
+
+.table tbody tr:hover td {
+  background: #fafafa;
+}
+
+.titleCell {
+  font-weight: 500;
+  color: #111827;
+}
+
+.titleDate {
+  display: block;
+  font-size: 12px;
+  font-weight: 400;
+  color: #9ca3af;
+  margin-top: 2px;
+}
+
+/* ── Badges ──────────────────────────────────────────────────────────────── */
+
+.badge {
+  display: inline-block;
+  padding: 2px 8px;
+  border-radius: 4px;
+  font-size: 12px;
+  font-weight: 500;
+}
+
+.badgeTreejack {
+  background: #dbeafe;
+  color: #1e40af;
+}
+
+.badgeCardSort {
+  background: #ede9fe;
+  color: #5b21b6;
+}
+
+.badgeDraft {
+  background: #f3f4f6;
+  color: #374151;
+}
+
+.badgePublished {
+  background: #dcfce7;
+  color: #166534;
+}
+
+.badgeClosed {
+  background: #fee2e2;
+  color: #991b1b;
+}
+
+/* ── Actions ─────────────────────────────────────────────────────────────── */
+
+.actions {
+  display: flex;
+  gap: 12px;
+}
+
+.actionLink {
+  font-size: 13px;
+  font-weight: 500;
+  color: #4b5563;
+  padding: 3px 0;
+  border-bottom: 1px solid transparent;
+  transition: color 0.1s, border-color 0.1s;
+}
+
+.actionLink:hover {
+  color: #111827;
+  border-bottom-color: #111827;
+}
+
+/* ── Empty & loading states ──────────────────────────────────────────────── */
+
+.empty {
+  padding: 60px 24px;
+  text-align: center;
+  color: #9ca3af;
+  font-size: 14px;
+}
+
+.loading {
+  padding: 60px 24px;
+  text-align: center;
+  color: #9ca3af;
+  font-size: 14px;
+}
