@@ -92,6 +92,43 @@
 
 .backBtn:hover { background: #f9fafb; border-color: #9ca3af; }
 
+.publicLinkWrap {
+  display: inline-flex;
+  align-items: center;
+  margin-top: 10px;
+  background: #f9fafb;
+  border: 1px solid #e5e7eb;
+  border-radius: 5px;
+  overflow: hidden;
+}
+
+.publicLink {
+  font-size: 12px;
+  font-family: ui-monospace, 'Cascadia Code', 'Source Code Pro', monospace;
+  color: #6b7280;
+  padding: 4px 10px;
+  transition: color 0.1s;
+  word-break: break-all;
+}
+
+.publicLink:hover { color: #111827; }
+
+.copyBtn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  width: 28px;
+  padding: 4px 0;
+  color: #9ca3af;
+  border-left: 1px solid #e5e7eb;
+  transition: background 0.1s, color 0.1s;
+}
+
+.copyBtn:hover { background: #f3f4f6; color: #374151; }
+
+.copyBtnSuccess { color: #16a34a; opacity: 1; }
+
 .titleRow {
   display: flex;
   align-items: center;

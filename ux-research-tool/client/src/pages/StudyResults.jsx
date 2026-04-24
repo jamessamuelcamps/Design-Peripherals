@@ -484,6 +484,7 @@ export default function StudyResults() {
   const [error, setError]         = useState(null);
   const [tab, setTab]             = useState('individual');
   const [closing, setClosing]     = useState(false);
+  const [copied, setCopied]       = useState(false);
 
   useTitle(study ? `${study.title} — Results` : null);
 
@@ -499,6 +500,12 @@ export default function StudyResults() {
       .catch(() => setError('Failed to load study data. Is the server running?'))
       .finally(() => setLoading(false));
   }, [id]);
+
+  function handleCopy(url) {
+    navigator.clipboard.writeText(url);
+    setCopied(true);
+    setTimeout(() => setCopied(false), 2000);
+  }
 
   async function handleClose() {
     if (!window.confirm('Close this study? Participants will no longer be able to submit responses.')) return;
@@ -551,6 +558,32 @@ export default function StudyResults() {
             <h1 className={styles.title}>{study.title}</h1>
             <span className={styles.statusBadge} data-status={study.status}>{study.status}</span>
           </div>
+          {study.status === 'published' && (() => {
+            const url = `${window.location.origin}/s/${study.public_token}`;
+            return (
+              <div className={styles.publicLinkWrap}>
+                <a href={url} target="_blank" rel="noreferrer" className={styles.publicLink}>
+                  {url}
+                </a>
+                <button
+                  className={`${styles.copyBtn} ${copied ? styles.copyBtnSuccess : ''}`}
+                  onClick={() => handleCopy(url)}
+                  title="Copy link"
+                >
+                  {copied ? (
+                    <svg width="13" height="13" viewBox="0 0 13 13" fill="none" aria-hidden="true">
+                      <path d="M2 7l3.5 3.5L11 3" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" />
+                    </svg>
+                  ) : (
+                    <svg width="13" height="13" viewBox="0 0 13 13" fill="none" aria-hidden="true">
+                      <rect x="4.5" y="1" width="7" height="8" rx="1.5" stroke="currentColor" strokeWidth="1.3" />
+                      <rect x="1" y="4" width="7" height="8" rx="1.5" stroke="currentColor" strokeWidth="1.3" fill="white" />
+                    </svg>
+                  )}
+                </button>
+              </div>
+            );
+          })()}
         </div>
         {study.status === 'published' && (
           <button className={styles.closeBtn} onClick={handleClose} disabled={closing}>

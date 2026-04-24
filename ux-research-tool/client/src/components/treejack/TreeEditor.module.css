@@ -1,17 +1,23 @@
 .editor {
-  /* container — inherits page width */
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
 }
 
 .node {
-  /* wrapper for row + children */
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
 }
 
 .nodeRow {
   display: flex;
   align-items: center;
   gap: 8px;
-  padding: 6px 8px;
-  border-radius: 6px;
+  padding: 10px 14px;
+  background: #ffffff;
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
   transition: background 0.1s;
 }
 
@@ -30,6 +36,17 @@
   color: #111827;
 }
 
+.labelText {
+  cursor: pointer;
+}
+
+.labelText:hover {
+  text-decoration: underline;
+  text-decoration-style: dashed;
+  text-underline-offset: 3px;
+  text-decoration-color: #9ca3af;
+}
+
 .labelInput {
   width: 100%;
   max-width: 300px;
@@ -42,16 +59,21 @@
   color: #111827;
 }
 
+.grabHandle {
+  display: flex;
+  align-items: center;
+  flex-shrink: 0;
+  padding: 0 4px;
+  color: #d1d5db;
+  cursor: grab;
+  touch-action: none;
+}
+
+.grabHandle:active { cursor: grabbing; }
+
 .nodeActions {
   display: flex;
   gap: 4px;
-  opacity: 0;
-  transition: opacity 0.1s;
-}
-
-.nodeRow:hover .nodeActions,
-.nodeRow:focus-within .nodeActions {
-  opacity: 1;
 }
 
 .nodeBtn {
@@ -73,9 +95,40 @@
   color: #b91c1c;
 }
 
+.nodeBtnIcon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 3px 6px;
+}
+
+.nodeBtn:disabled {
+  opacity: 0.3;
+  cursor: not-allowed;
+}
+
 .children {
-  margin-left: 18px;
+  margin-left: 20px;
   padding-left: 14px;
   border-left: 2px solid #e5e7eb;
-  margin-top: 1px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  margin-top: 0;
+}
+
+.dragOverlay {
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.12);
+  cursor: grabbing;
+}
+
+.dragChildBadge {
+  font-size: 11px;
+  font-weight: 500;
+  color: #6b7280;
+  background: #f3f4f6;
+  border-radius: 10px;
+  padding: 1px 7px;
+  white-space: nowrap;
+  flex-shrink: 0;
 }

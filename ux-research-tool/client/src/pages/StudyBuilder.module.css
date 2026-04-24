@@ -23,14 +23,22 @@
 }
 
 .backLink {
+  display: inline-flex;
+  align-items: center;
+  padding: 7px 14px;
   font-size: 14px;
-  color: #6b7280;
+  font-weight: 500;
+  color: #374151;
+  background: #fff;
+  border: 1px solid #d1d5db;
+  border-radius: 6px;
   margin-right: auto;
-  transition: color 0.1s;
+  transition: background 0.1s, border-color 0.1s;
 }
 
 .backLink:hover {
-  color: #111827;
+  background: #f9fafb;
+  border-color: #9ca3af;
 }
 
 .badge {
@@ -41,7 +49,7 @@
   font-weight: 500;
 }
 
-.badgeDraft     { background: #f3f4f6; color: #374151; }
+.badgeDraft     { background: #fff; color: #6b7280; border: 1px solid #d1d5db; }
 .badgePublished { background: #dcfce7; color: #166534; }
 .badgeClosed    { background: #fee2e2; color: #991b1b; }
 
@@ -76,12 +84,13 @@
   font-size: 14px;
   font-weight: 500;
   color: #fff;
-  background: #111827;
+  background: #16a34a;
+  border: 1px solid #16a34a;
   border-radius: 6px;
-  transition: background 0.1s;
+  transition: background 0.1s, border-color 0.1s;
 }
 
-.btnPrimary:hover:not(:disabled) { background: #1f2937; }
+.btnPrimary:hover:not(:disabled) { background: #15803d; border-color: #15803d; }
 .btnPrimary:disabled { opacity: 0.5; cursor: not-allowed; }
 
 /* ── Sections ─────────────────────────────────────────────────────────────── */
@@ -89,6 +98,7 @@
 .section {
   margin-top: 36px;
 }
+
 
 .sectionHeading {
   font-size: 11px;

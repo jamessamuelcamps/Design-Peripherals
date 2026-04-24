@@ -169,7 +169,6 @@ export default function StudyBuilder() {
   const topBar = (
     <div className={styles.topBar}>
       <Link to="/" className={styles.backLink}>← Studies</Link>
-      <StatusBadge status={study.status} />
       <div className={styles.topActions}>
         {feedback && (
           <span className={`${styles.feedbackMsg} ${feedback.type === 'error' ? styles.feedbackError : styles.feedbackSuccess}`}>
