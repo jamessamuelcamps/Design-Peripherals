@@ -546,9 +546,11 @@ export default function StudyResults() {
     <div className={styles.page}>
       <div className={styles.pageHeader}>
         <div>
-          <button className={styles.backLink} onClick={() => navigate('/')}>← Studies</button>
-          <h1 className={styles.title}>{study.title}</h1>
-          <span className={styles.statusBadge} data-status={study.status}>{study.status}</span>
+          <button className={styles.backBtn} onClick={() => navigate('/')}>← Studies</button>
+          <div className={styles.titleRow}>
+            <h1 className={styles.title}>{study.title}</h1>
+            <span className={styles.statusBadge} data-status={study.status}>{study.status}</span>
+          </div>
         </div>
         {study.status === 'published' && (
           <button className={styles.closeBtn} onClick={handleClose} disabled={closing}>

@@ -49,10 +49,11 @@ export default function StudiesList() {
   useTitle('Studies');
   const navigate = useNavigate();
 
-  const [studies, setStudies]   = useState([]);
-  const [loading, setLoading]   = useState(true);
-  const [error, setError]       = useState(null);
-  const [deleting, setDeleting] = useState(null);
+  const [studies, setStudies]         = useState([]);
+  const [loading, setLoading]         = useState(true);
+  const [error, setError]             = useState(null);
+  const [deleting, setDeleting]       = useState(null);
+  const [confirmStudy, setConfirmStudy] = useState(null);
 
   useEffect(() => {
     api.get('/studies')
@@ -61,9 +62,14 @@ export default function StudiesList() {
       .finally(() => setLoading(false));
   }, []);
 
-  async function handleDelete(e, study) {
+  function handleDelete(e, study) {
     e.stopPropagation();
-    if (!window.confirm(`Delete "${study.title}"? This will permanently remove the study and all its responses.`)) return;
+    setConfirmStudy(study);
+  }
+
+  async function handleConfirmDelete() {
+    const study = confirmStudy;
+    setConfirmStudy(null);
     setDeleting(study.id);
     try {
       await api.delete(`/studies/${study.id}`);
@@ -196,6 +202,25 @@ export default function StudiesList() {
             </section>
           )}
 
+        </div>
+      )}
+
+      {confirmStudy && (
+        <div className={styles.modalOverlay} onClick={() => setConfirmStudy(null)}>
+          <div className={styles.modal} onClick={e => e.stopPropagation()}>
+            <h2 className={styles.modalTitle}>Delete study?</h2>
+            <p className={styles.modalBody}>
+              <strong>"{confirmStudy.title}"</strong> and all its responses will be permanently deleted.
+            </p>
+            <div className={styles.modalActions}>
+              <button className={styles.modalCancel} onClick={() => setConfirmStudy(null)}>
+                Cancel
+              </button>
+              <button className={styles.modalDelete} onClick={handleConfirmDelete}>
+                Delete
+              </button>
+            </div>
+          </div>
         </div>
       )}
     </div>
