@@ -1,0 +1,112 @@
+.tree {
+  /* container */
+}
+
+.node {
+  /* wrapper for row + children */
+}
+
+.row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 7px 10px;
+  border-radius: 7px;
+  transition: background 0.1s;
+  min-height: 40px;
+}
+
+.row:hover {
+  background: #f9fafb;
+}
+
+.row:hover .selectBtn {
+  opacity: 1;
+}
+
+.rowSelected {
+  background: #eff6ff !important;
+}
+
+/* ── Toggle arrow ────────────────────────────────────────────────────────── */
+
+.toggle {
+  flex-shrink: 0;
+  width: 24px;
+  height: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 13px;
+  color: #9ca3af;
+  border-radius: 4px;
+  transition: color 0.1s, background 0.1s;
+}
+
+.toggle:hover {
+  color: #374151;
+  background: #f3f4f6;
+}
+
+.toggleGap {
+  flex-shrink: 0;
+  width: 24px;
+}
+
+/* ── Labels ──────────────────────────────────────────────────────────────── */
+
+.label {
+  flex: 1;
+  font-size: 15px;
+  color: #111827;
+  line-height: 1.4;
+}
+
+.labelRoot {
+  font-weight: 600;
+  color: #374151;
+}
+
+/* ── Select button ───────────────────────────────────────────────────────── */
+
+.selectBtn {
+  flex-shrink: 0;
+  padding: 5px 11px;
+  font-size: 13px;
+  font-weight: 500;
+  background: #f3f4f6;
+  color: #374151;
+  border-radius: 5px;
+  opacity: 0;
+  transition: opacity 0.1s, background 0.1s, color 0.1s;
+  white-space: nowrap;
+}
+
+.selectBtn:hover {
+  background: #e5e7eb;
+}
+
+.selectBtnActive {
+  opacity: 1 !important;
+  background: #dbeafe;
+  color: #1d4ed8;
+}
+
+.selectBtnActive:hover {
+  background: #bfdbfe;
+}
+
+/* ── Children ────────────────────────────────────────────────────────────── */
+
+.children {
+  margin-left: 32px;
+  padding-left: 10px;
+  border-left: 2px solid #f3f4f6;
+  margin-top: 1px;
+}
+
+.childrenRoot {
+  margin-left: 0;
+  padding-left: 0;
+  border-left: none;
+}

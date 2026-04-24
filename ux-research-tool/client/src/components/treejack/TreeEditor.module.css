@@ -1,0 +1,81 @@
+.editor {
+  /* container — inherits page width */
+}
+
+.node {
+  /* wrapper for row + children */
+}
+
+.nodeRow {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 8px;
+  border-radius: 6px;
+  transition: background 0.1s;
+}
+
+.nodeRow:hover,
+.nodeRow:focus-within {
+  background: #f9fafb;
+}
+
+.nodeRoot .nodeLabel {
+  font-weight: 600;
+}
+
+.nodeLabel {
+  flex: 1;
+  font-size: 14px;
+  color: #111827;
+}
+
+.labelInput {
+  width: 100%;
+  max-width: 300px;
+  padding: 3px 7px;
+  font-size: 14px;
+  font-family: inherit;
+  border: 1px solid #6366f1;
+  border-radius: 4px;
+  outline: none;
+  color: #111827;
+}
+
+.nodeActions {
+  display: flex;
+  gap: 4px;
+  opacity: 0;
+  transition: opacity 0.1s;
+}
+
+.nodeRow:hover .nodeActions,
+.nodeRow:focus-within .nodeActions {
+  opacity: 1;
+}
+
+.nodeBtn {
+  padding: 3px 9px;
+  font-size: 12px;
+  color: #4b5563;
+  background: #f3f4f6;
+  border-radius: 4px;
+  transition: background 0.1s, color 0.1s;
+}
+
+.nodeBtn:hover {
+  background: #e5e7eb;
+  color: #111827;
+}
+
+.nodeBtnDanger:hover {
+  background: #fee2e2;
+  color: #b91c1c;
+}
+
+.children {
+  margin-left: 18px;
+  padding-left: 14px;
+  border-left: 2px solid #e5e7eb;
+  margin-top: 1px;
+}

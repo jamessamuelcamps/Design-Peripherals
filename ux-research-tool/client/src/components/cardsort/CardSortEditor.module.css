@@ -1,0 +1,72 @@
+.list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.empty {
+  font-size: 14px;
+  color: #9ca3af;
+}
+
+.row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.rowInput {
+  flex: 1;
+  padding: 8px 10px;
+  font-size: 14px;
+  font-family: inherit;
+  border: 1px solid #d1d5db;
+  border-radius: 6px;
+  color: #111827;
+  background: #fff;
+  transition: border-color 0.15s;
+}
+
+.rowInput:focus {
+  outline: none;
+  border-color: #6b7280;
+}
+
+.deleteBtn {
+  flex-shrink: 0;
+  padding: 7px 10px;
+  font-size: 13px;
+  color: #9ca3af;
+  border-radius: 4px;
+  transition: color 0.1s, background 0.1s;
+}
+
+.deleteBtn:hover:not(:disabled) {
+  background: #fee2e2;
+  color: #b91c1c;
+}
+
+.deleteBtn:disabled {
+  opacity: 0.35;
+  cursor: not-allowed;
+}
+
+.addBtn {
+  margin-top: 4px;
+  padding: 8px 14px;
+  font-size: 14px;
+  font-weight: 500;
+  color: #4b5563;
+  background: #fff;
+  border: 1.5px dashed #d1d5db;
+  border-radius: 6px;
+  width: 100%;
+  text-align: center;
+  transition: background 0.1s, border-color 0.1s, color 0.1s;
+}
+
+.addBtn:hover {
+  background: #f9fafb;
+  border-color: #9ca3af;
+  color: #111827;
+}

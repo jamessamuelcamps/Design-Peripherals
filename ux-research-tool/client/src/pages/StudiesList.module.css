@@ -8,7 +8,7 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  margin-bottom: 28px;
+  margin-bottom: 32px;
 }
 
 .heading {
@@ -30,8 +30,68 @@
   transition: background 0.15s;
 }
 
-.btnPrimary:hover {
-  background: #1f2937;
+.btnPrimary:hover { background: #1f2937; }
+
+/* ── Skeleton ─────────────────────────────────────────────────────────────── */
+
+@keyframes shimmer {
+  0%   { background-position: -800px 0; }
+  100% { background-position: 800px 0; }
+}
+
+.skeletonList { display: flex; flex-direction: column; gap: 4px; }
+
+.skeletonRow {
+  height: 56px;
+  border-radius: 8px;
+  background: linear-gradient(90deg, #f3f4f6 25%, #e9eaec 50%, #f3f4f6 75%);
+  background-size: 800px 100%;
+  animation: shimmer 1.4s infinite;
+}
+
+/* ── Error ───────────────────────────────────────────────────────────────── */
+
+.errorBanner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 14px 16px;
+  background: #fef2f2;
+  border: 1px solid #fecaca;
+  border-radius: 8px;
+  font-size: 14px;
+  color: #991b1b;
+}
+
+.errorBanner button {
+  flex-shrink: 0;
+  font-size: 13px;
+  font-weight: 500;
+  background: #fee2e2;
+  color: #991b1b;
+  padding: 5px 10px;
+  border-radius: 5px;
+  transition: background 0.1s;
+}
+
+.errorBanner button:hover { background: #fecaca; }
+
+/* ── Sections ────────────────────────────────────────────────────────────── */
+
+.sections {
+  display: flex;
+  flex-direction: column;
+  gap: 28px;
+}
+
+.sectionHeading {
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.07em;
+  color: #9ca3af;
+  margin-bottom: 8px;
 }
 
 /* ── Table ───────────────────────────────────────────────────────────────── */
@@ -43,109 +103,115 @@
   overflow: hidden;
 }
 
+.tableScroll {
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
 .table {
   width: 100%;
   border-collapse: collapse;
   font-size: 14px;
+  min-width: 480px;
 }
 
 .table th {
-  padding: 11px 16px;
+  padding: 7px 12px;
   text-align: left;
-  font-size: 12px;
+  font-size: 11px;
   font-weight: 600;
   text-transform: uppercase;
   letter-spacing: 0.05em;
-  color: #6b7280;
+  color: #9ca3af;
   background: #f9fafb;
   border-bottom: 1px solid #e5e7eb;
+  white-space: nowrap;
 }
 
+.colType       { width: 110px; }
+.colDate       { width: 120px; }
+.colCreatedBy  { width: 130px; }
+.dateCell      { font-size: 12px; color: #9ca3af; white-space: nowrap; }
+.createdByCell { font-size: 12px; color: #9ca3af; }
+.thActions     { width: 68px; }
+
 .table td {
-  padding: 13px 16px;
+  padding: 8px 12px;
   border-bottom: 1px solid #f3f4f6;
   color: #374151;
   vertical-align: middle;
+  font-size: 13px;
 }
 
-.table tbody tr:last-child td {
-  border-bottom: none;
-}
-
-.table tbody tr:hover td {
-  background: #fafafa;
-}
+.table tbody tr:last-child td { border-bottom: none; }
 
 .titleCell {
   font-weight: 500;
   color: #111827;
 }
 
-.titleDate {
-  display: block;
-  font-size: 12px;
-  font-weight: 400;
-  color: #9ca3af;
-  margin-top: 2px;
+/* ── Clickable published rows ────────────────────────────────────────────── */
+
+.clickableRow {
+  cursor: pointer;
+  transition: background 0.1s;
 }
+
+.clickableRow:hover td { background: #f9fafb; }
 
 /* ── Badges ──────────────────────────────────────────────────────────────── */
 
 .badge {
   display: inline-block;
-  padding: 2px 8px;
+  padding: 1px 7px;
   border-radius: 4px;
-  font-size: 12px;
+  font-size: 11px;
   font-weight: 500;
+  white-space: nowrap;
 }
 
-.badgeTreejack {
-  background: #dbeafe;
-  color: #1e40af;
+.badgeTreejack  { background: #dbeafe; color: #1e40af; }
+.badgeCardSort  { background: #ede9fe; color: #5b21b6; }
+.badgePublished { background: #dcfce7; color: #166534; }
+.badgeClosed    { background: #f3f4f6; color: #6b7280; }
+
+/* ── Icon action buttons ─────────────────────────────────────────────────── */
+
+.actionsCell {
+  white-space: nowrap;
 }
 
-.badgeCardSort {
-  background: #ede9fe;
-  color: #5b21b6;
+.actionsCell .iconBtn + .iconBtn {
+  margin-left: 4px;
 }
 
-.badgeDraft {
+.iconBtn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 26px;
+  height: 26px;
+  border-radius: 5px;
+  color: #9ca3af;
+  transition: background 0.1s, color 0.1s;
+}
+
+.iconBtn:hover {
   background: #f3f4f6;
   color: #374151;
 }
 
-.badgePublished {
-  background: #dcfce7;
-  color: #166534;
+.iconBtnDanger:hover {
+  background: #fef2f2;
+  color: #dc2626;
 }
 
-.badgeClosed {
-  background: #fee2e2;
-  color: #991b1b;
+.iconBtn:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
 }
 
-/* ── Actions ─────────────────────────────────────────────────────────────── */
-
-.actions {
-  display: flex;
-  gap: 12px;
-}
-
-.actionLink {
-  font-size: 13px;
-  font-weight: 500;
-  color: #4b5563;
-  padding: 3px 0;
-  border-bottom: 1px solid transparent;
-  transition: color 0.1s, border-color 0.1s;
-}
-
-.actionLink:hover {
-  color: #111827;
-  border-bottom-color: #111827;
-}
-
-/* ── Empty & loading states ──────────────────────────────────────────────── */
+/* ── Empty ───────────────────────────────────────────────────────────────── */
 
 .empty {
   padding: 60px 24px;
@@ -154,9 +220,8 @@
   font-size: 14px;
 }
 
-.loading {
-  padding: 60px 24px;
-  text-align: center;
-  color: #9ca3af;
-  font-size: 14px;
+/* ── Responsive ──────────────────────────────────────────────────────────── */
+
+@media (max-width: 768px) {
+  .page { padding: 24px 16px; }
 }

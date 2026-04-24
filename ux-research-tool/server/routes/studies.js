@@ -15,7 +15,7 @@ function parseStudy(row) {
 router.get('/', (req, res) => {
   try {
     const rows = db.prepare(`
-      SELECT s.id, s.title, s.type, s.status, s.public_token, s.created_at, s.updated_at,
+      SELECT s.id, s.title, s.type, s.status, s.public_token, s.created_by, s.created_at, s.updated_at,
              COUNT(r.id) AS response_count
       FROM studies s
       LEFT JOIN responses r ON r.study_id = s.id

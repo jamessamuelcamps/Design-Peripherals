@@ -11,6 +11,15 @@
   margin-bottom: 32px;
 }
 
+.error {
+  margin-bottom: 16px;
+  padding: 10px 14px;
+  background: #fee2e2;
+  color: #991b1b;
+  border-radius: 6px;
+  font-size: 14px;
+}
+
 .cards {
   display: grid;
   grid-template-columns: 1fr 1fr;

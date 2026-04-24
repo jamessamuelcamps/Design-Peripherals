@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import api from '../api/client';
+import { useTitle } from '../hooks/useTitle';
 import styles from './NewStudy.module.css';
 
 const STUDY_TYPES = [
@@ -23,12 +24,15 @@ const STUDY_TYPES = [
 ];
 
 export default function NewStudy() {
+  useTitle('New Study');
   const navigate = useNavigate();
   const [creating, setCreating] = useState(null);
+  const [error, setError] = useState(null);
 
   async function handleSelect(option) {
     if (creating) return;
     setCreating(option.type);
+    setError(null);
     try {
       const res = await api.post('/studies', {
         title: option.defaultTitle,
@@ -36,7 +40,8 @@ export default function NewStudy() {
         config: option.defaultConfig,
       });
       navigate(`/studies/${res.data.id}/edit`);
-    } catch {
+    } catch (err) {
+      setError(err.response?.data?.error || 'Could not create study — is the server running?');
       setCreating(null);
     }
   }
@@ -44,6 +49,7 @@ export default function NewStudy() {
   return (
     <div className={styles.page}>
       <h1 className={styles.heading}>Choose a study type</h1>
+      {error && <p className={styles.error}>{error}</p>}
       <div className={styles.cards}>
         {STUDY_TYPES.map(option => (
           <button

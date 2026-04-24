@@ -13,6 +13,7 @@ db.exec(`
     config       TEXT NOT NULL,
     status       TEXT NOT NULL DEFAULT 'draft',
     public_token TEXT UNIQUE,
+    created_by   TEXT,
     created_at   DATETIME DEFAULT CURRENT_TIMESTAMP,
     updated_at   DATETIME DEFAULT CURRENT_TIMESTAMP
   );
@@ -26,5 +27,8 @@ db.exec(`
     completed_at      DATETIME DEFAULT CURRENT_TIMESTAMP
   );
 `);
+
+// Add created_by to existing databases that predate the column
+try { db.exec('ALTER TABLE studies ADD COLUMN created_by TEXT'); } catch {}
 
 module.exports = db;
