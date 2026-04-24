@@ -46,6 +46,24 @@ const OUTCOME_META = {
 };
 const OUTCOME_KEYS = ['direct_success', 'indirect_success', 'direct_failure', 'indirect_failure'];
 
+// ── Icons ─────────────────────────────────────────────────────────────────────
+
+function ChevronRight() {
+  return (
+    <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+      <path d="M6 4l4 4-4 4" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
+    </svg>
+  );
+}
+
+function ChevronDown() {
+  return (
+    <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+      <path d="M4 6l4 4 4-4" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
+    </svg>
+  );
+}
+
 // ── Shared components ─────────────────────────────────────────────────────────
 
 function Breadcrumb({ path }) {
@@ -162,7 +180,7 @@ function TreejackIndividualView({ responses, taskMap, study }) {
               </div>
               <div className={styles.responseRight}>
                 <span className={styles.responseDate}>{formatDate(resp.completed_at)}</span>
-                <span className={styles.chevron}>{isOpen ? '▾' : '▸'}</span>
+                <span className={styles.chevron}>{isOpen ? <ChevronDown /> : <ChevronRight />}</span>
               </div>
             </button>
 
@@ -295,7 +313,7 @@ function CardSortIndividualView({ responses, study }) {
               </div>
               <div className={styles.responseRight}>
                 <span className={styles.responseDate}>{formatDate(resp.completed_at)}</span>
-                <span className={styles.chevron}>{isOpen ? '▾' : '▸'}</span>
+                <span className={styles.chevron}>{isOpen ? <ChevronDown /> : <ChevronRight />}</span>
               </div>
             </button>
 

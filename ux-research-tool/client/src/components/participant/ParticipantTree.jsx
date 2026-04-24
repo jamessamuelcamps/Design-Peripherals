@@ -1,6 +1,22 @@
 import { useState } from 'react';
 import styles from './ParticipantTree.module.css';
 
+function ChevronRight() {
+  return (
+    <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+      <path d="M6 4l4 4-4 4" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
+    </svg>
+  );
+}
+
+function ChevronDown() {
+  return (
+    <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+      <path d="M4 6l4 4 4-4" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
+    </svg>
+  );
+}
+
 function TreeNode({ node, indexPath, labelPath, expanded, onToggle, selectedPath, onSelect, isRoot }) {
   const pathKey = indexPath.join(',');
   const isExpanded = isRoot || expanded.has(pathKey);
@@ -12,9 +28,8 @@ function TreeNode({ node, indexPath, labelPath, expanded, onToggle, selectedPath
     selectedPath.length === labelPath.length &&
     labelPath.every((l, i) => selectedPath[i] === l);
 
-  function handleToggle(e) {
-    e.stopPropagation();
-    onToggle(pathKey);
+  function handleRowClick() {
+    if (!isRoot && hasChildren) onToggle(pathKey);
   }
 
   function handleSelect(e) {
@@ -24,12 +39,14 @@ function TreeNode({ node, indexPath, labelPath, expanded, onToggle, selectedPath
 
   return (
     <div className={styles.node}>
-      <div className={`${styles.row} ${isSelected ? styles.rowSelected : ''}`}>
-        {/* Expand / collapse arrow */}
+      <div
+        className={`${styles.row} ${isSelected ? styles.rowSelected : ''} ${!isRoot && hasChildren ? styles.rowExpandable : ''}`}
+        onClick={handleRowClick}
+      >
         {!isRoot && hasChildren ? (
-          <button className={styles.toggle} onClick={handleToggle} aria-label={isExpanded ? 'Collapse' : 'Expand'}>
-            {isExpanded ? '▾' : '▸'}
-          </button>
+          <span className={styles.toggle}>
+            {isExpanded ? <ChevronDown /> : <ChevronRight />}
+          </span>
         ) : (
           <span className={styles.toggleGap} />
         )}
